@@ -1,0 +1,64 @@
+name: Validate manifest
+
+on:
+  push:
+    branches: [main]
+    paths: [latest.json]
+  pull_request:
+    paths: [latest.json]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON structure
+        run: |
+          jq -e '.version and .notes and .pub_date and .platforms' latest.json > /dev/null
+          echo "✓ Required top-level fields present"
+
+          for platform in $(jq -r '.platforms | keys[]' latest.json); do
+            jq -e ".platforms[\"$platform\"].signature and .platforms[\"$platform\"].url" latest.json > /dev/null
+            echo "✓ Platform '$platform' has signature and url"
+          done
+
+      - name: Validate semver version
+        run: |
+          VERSION=$(jq -r '.version' latest.json)
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "✗ Invalid semver: $VERSION"
+            exit 1
+          fi
+          echo "✓ Version $VERSION is valid semver"
+
+      - name: Validate pub_date is ISO 8601
+        run: |
+          PUB_DATE=$(jq -r '.pub_date' latest.json)
+          if ! date -d "$PUB_DATE" > /dev/null 2>&1; then
+            echo "✗ Invalid ISO 8601 date: $PUB_DATE"
+            exit 1
+          fi
+          echo "✓ Date $PUB_DATE is valid"
+
+      - name: Validate signature is non-empty
+        run: |
+          for platform in $(jq -r '.platforms | keys[]' latest.json); do
+            SIG=$(jq -r ".platforms[\"$platform\"].signature" latest.json)
+            if [ -z "$SIG" ] || [ "$SIG" = "null" ]; then
+              echo "✗ Empty signature for platform '$platform'"
+              exit 1
+            fi
+            echo "✓ Platform '$platform' has non-empty signature (${#SIG} chars)"
+          done
+
+      - name: Validate artifact URLs are reachable
+        run: |
+          for platform in $(jq -r '.platforms | keys[]' latest.json); do
+            URL=$(jq -r ".platforms[\"$platform\"].url" latest.json)
+            if ! curl -fsSL --head --max-time 10 "$URL" > /dev/null 2>&1; then
+              echo "✗ Unreachable URL for platform '$platform': $URL"
+              exit 1
+            fi
+            echo "✓ Platform '$platform' artifact reachable: $URL"
+          done
