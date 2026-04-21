@@ -2,8 +2,21 @@
 # ============================================================================
 # publish-release.sh
 # ============================================================================
-# Creates a GitHub Release with macOS arm64 + x86_64 artifacts, then updates
-# latest.json with signatures and URLs for both platforms.
+# Three-step release pipeline for Keen. Each step is a separate invocation:
+#
+#   Step A — Create GitHub Release (client artifacts only)
+#     publish-release.sh <version> [release-notes] \
+#       [--arm64-bundle <dir>] [--x64-bundle <dir>]
+#
+#   Step B — Deploy backend to Fly.io
+#     publish-release.sh --deploy-fly <version> <app-name>
+#
+#   Step C — Publish client update manifest (latest.json)
+#     publish-release.sh --publish-manifest <version>
+#
+# The three-step flow enforces: deploy backend BEFORE publishing the client
+# manifest, so clients never see an update pointing at a not-yet-deployed
+# backend.
 #
 # Expects the renamed updater artifacts produced by
 # keen-frontend/scripts/rename-updater-artifacts.sh:
@@ -13,11 +26,6 @@
 #   Keen_${VERSION}_aarch64.dmg
 #   Keen_${VERSION}_x64.dmg
 #
-# Usage:
-#   publish-release.sh <version> [release-notes] \
-#     [--arm64-bundle <arm64-bundle-dir>] \
-#     [--x64-bundle   <x64-bundle-dir>]
-#
 # Defaults (matching dual-architecture-builds.md):
 #   arm64 bundle dir: keen-frontend/src-tauri/target/release/bundle
 #   x64   bundle dir: keen-frontend/src-tauri/target/x86_64-apple-darwin/release/bundle
@@ -25,12 +33,162 @@
 
 set -euo pipefail
 
-# ── Parse positional args ──
-if [[ $# -lt 1 ]]; then
-  echo "Usage: publish-release.sh <version> [release-notes] [--arm64-bundle <dir>] [--x64-bundle <dir>]" >&2
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+GH_REPO="saputello2/keen-releases"
+
+usage() {
+  cat >&2 <<'USAGE'
+Usage:
+  Step A — Create GitHub Release:
+    publish-release.sh <version> [release-notes] \
+      [--arm64-bundle <dir>] [--x64-bundle <dir>]
+
+  Step B — Deploy backend to Fly.io:
+    publish-release.sh --deploy-fly <version> <app-name>
+
+  Step C — Publish client manifest:
+    publish-release.sh --publish-manifest <version>
+USAGE
   exit 1
+}
+
+if [[ $# -lt 1 ]]; then
+  usage
 fi
 
+# ── Route to the correct step ──
+case "$1" in
+  --deploy-fly)
+    # ── Step B: Deploy backend to Fly.io ──
+    shift
+    if [[ $# -lt 2 ]]; then
+      echo "Usage: publish-release.sh --deploy-fly <version> <app-name>" >&2
+      exit 1
+    fi
+    VERSION="$1"
+    APP_NAME="$2"
+
+    echo "=== Step B: Deploy backend ${VERSION} to Fly.io (${APP_NAME}) ==="
+    echo ""
+
+    if [[ ! -x "$SCRIPT_DIR/deploy-fly.sh" ]]; then
+      echo "ERROR: deploy-fly.sh not found at $SCRIPT_DIR/deploy-fly.sh" >&2
+      exit 1
+    fi
+
+    "$SCRIPT_DIR/deploy-fly.sh" "$VERSION" "$APP_NAME"
+    exit $?
+    ;;
+
+  --publish-manifest)
+    # ── Step C: Publish latest.json ──
+    shift
+    if [[ $# -lt 1 ]]; then
+      echo "Usage: publish-release.sh --publish-manifest <version>" >&2
+      exit 1
+    fi
+    VERSION="$1"
+
+    echo "=== Step C: Publish client manifest for ${VERSION} ==="
+    echo ""
+
+    # Verify the GitHub Release exists
+    if ! gh release view "v${VERSION}" --repo "$GH_REPO" > /dev/null 2>&1; then
+      echo "ERROR: GitHub Release v${VERSION} not found in ${GH_REPO}." >&2
+      echo "Run Step A first: publish-release.sh ${VERSION}" >&2
+      exit 1
+    fi
+
+    # Download .sig files from the release to read signatures
+    TMPDIR_SIGS=$(mktemp -d)
+    trap 'rm -rf "$TMPDIR_SIGS"' EXIT
+
+    echo "Downloading signatures from GitHub Release v${VERSION}..."
+    gh release download "v${VERSION}" \
+      --repo "$GH_REPO" \
+      --pattern "*.sig" \
+      --dir "$TMPDIR_SIGS"
+
+    ARM64_SIG_FILE="${TMPDIR_SIGS}/Keen_${VERSION}_aarch64.app.tar.gz.sig"
+    X64_SIG_FILE="${TMPDIR_SIGS}/Keen_${VERSION}_x64.app.tar.gz.sig"
+
+    if [[ ! -f "$ARM64_SIG_FILE" ]] || [[ ! -f "$X64_SIG_FILE" ]]; then
+      echo "ERROR: Could not find both .sig files in the release." >&2
+      echo "  Expected: Keen_${VERSION}_aarch64.app.tar.gz.sig" >&2
+      echo "  Expected: Keen_${VERSION}_x64.app.tar.gz.sig" >&2
+      ls -la "$TMPDIR_SIGS" >&2
+      exit 1
+    fi
+
+    ARM64_SIGNATURE=$(cat "$ARM64_SIG_FILE")
+    X64_SIGNATURE=$(cat "$X64_SIG_FILE")
+
+    RELEASE_BASE="https://github.com/${GH_REPO}/releases/download/v${VERSION}"
+    ARM64_URL="${RELEASE_BASE}/Keen_${VERSION}_aarch64.app.tar.gz"
+    X64_URL="${RELEASE_BASE}/Keen_${VERSION}_x64.app.tar.gz"
+
+    # Fetch release notes from the GH release
+    NOTES=$(gh release view "v${VERSION}" --repo "$GH_REPO" --json body -q .body 2>/dev/null || echo "Release v${VERSION}")
+    if [[ -z "$NOTES" ]]; then
+      NOTES="Release v${VERSION}"
+    fi
+
+    PUB_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
+
+    echo ""
+    echo "About to update latest.json and push to main:"
+    echo "  Version:  ${VERSION}"
+    echo "  arm64 URL: ${ARM64_URL}"
+    echo "  x64 URL:   ${X64_URL}"
+    echo ""
+    read -r -p "Proceed? (y/N) " CONFIRM
+    if [[ "$CONFIRM" != "y" && "$CONFIRM" != "Y" ]]; then
+      echo "Aborted."
+      exit 1
+    fi
+
+    cat > "${REPO_DIR}/latest.json" <<EOF
+{
+  "version": "${VERSION}",
+  "notes": "${NOTES}",
+  "pub_date": "${PUB_DATE}",
+  "platforms": {
+    "darwin-aarch64": {
+      "signature": "${ARM64_SIGNATURE}",
+      "url": "${ARM64_URL}"
+    },
+    "darwin-x86_64": {
+      "signature": "${X64_SIGNATURE}",
+      "url": "${X64_URL}"
+    }
+  }
+}
+EOF
+
+    cd "$REPO_DIR"
+    git add latest.json
+    git commit -m "release: v${VERSION}"
+    git push origin main
+
+    echo ""
+    echo "=== Manifest published ==="
+    echo "  Manifest: https://raw.githubusercontent.com/${GH_REPO}/main/latest.json"
+    echo "  Clients will now see v${VERSION} as an available update."
+    exit 0
+    ;;
+
+  --help|-h)
+    usage
+    ;;
+
+  --*)
+    echo "ERROR: Unknown flag: $1" >&2
+    usage
+    ;;
+esac
+
+# ── Step A: Create GitHub Release ──
 VERSION="$1"
 shift
 
@@ -40,12 +198,10 @@ if [[ $# -gt 0 && "$1" != --* ]]; then
   shift
 fi
 
-# ── Defaults for bundle roots ──
 FRONTEND_DIR="$HOME/Developer/keen/keen-frontend"
 ARM64_BUNDLE="$FRONTEND_DIR/src-tauri/target/release/bundle"
 X64_BUNDLE="$FRONTEND_DIR/src-tauri/target/x86_64-apple-darwin/release/bundle"
 
-# ── Parse --arm64-bundle / --x64-bundle flags ──
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --arm64-bundle)
@@ -58,14 +214,14 @@ while [[ $# -gt 0 ]]; do
       ;;
     *)
       echo "ERROR: Unknown flag: $1" >&2
-      exit 1
+      usage
       ;;
   esac
 done
 
-REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+echo "=== Step A: Create GitHub Release v${VERSION} ==="
+echo ""
 
-# ── Artifact paths ──
 ARM64_TAR="${ARM64_BUNDLE}/macos/Keen_${VERSION}_aarch64.app.tar.gz"
 ARM64_SIG="${ARM64_BUNDLE}/macos/Keen_${VERSION}_aarch64.app.tar.gz.sig"
 ARM64_DMG="${ARM64_BUNDLE}/dmg/Keen_${VERSION}_aarch64.dmg"
@@ -74,7 +230,6 @@ X64_TAR="${X64_BUNDLE}/macos/Keen_${VERSION}_x64.app.tar.gz"
 X64_SIG="${X64_BUNDLE}/macos/Keen_${VERSION}_x64.app.tar.gz.sig"
 X64_DMG="${X64_BUNDLE}/dmg/Keen_${VERSION}_x64.dmg"
 
-# ── Validate all 6 artifacts exist ──
 MISSING=()
 for f in "$ARM64_TAR" "$ARM64_SIG" "$ARM64_DMG" "$X64_TAR" "$X64_SIG" "$X64_DMG"; do
   if [[ ! -f "$f" ]]; then
@@ -98,16 +253,6 @@ if [[ ${#MISSING[@]} -gt 0 ]]; then
   exit 1
 fi
 
-# ── Read signatures ──
-ARM64_SIGNATURE=$(cat "$ARM64_SIG")
-X64_SIGNATURE=$(cat "$X64_SIG")
-
-PUB_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
-RELEASE_BASE="https://github.com/saputello2/keen-releases/releases/download/v${VERSION}"
-ARM64_URL="${RELEASE_BASE}/Keen_${VERSION}_aarch64.app.tar.gz"
-X64_URL="${RELEASE_BASE}/Keen_${VERSION}_x64.app.tar.gz"
-
-# ── Create GitHub Release with all 6 artifacts ──
 echo "Creating GitHub Release v${VERSION} with arm64 + x86_64 artifacts..."
 gh release create "v${VERSION}" \
   "$ARM64_TAR" \
@@ -116,36 +261,17 @@ gh release create "v${VERSION}" \
   "$X64_TAR" \
   "$X64_SIG" \
   "$X64_DMG" \
-  --repo saputello2/keen-releases \
+  --repo "$GH_REPO" \
   --title "v${VERSION}" \
   --notes "$NOTES"
 
-# ── Update latest.json ──
-echo "Updating latest.json..."
-cat > "${REPO_DIR}/latest.json" <<EOF
-{
-  "version": "${VERSION}",
-  "notes": "${NOTES}",
-  "pub_date": "${PUB_DATE}",
-  "platforms": {
-    "darwin-aarch64": {
-      "signature": "${ARM64_SIGNATURE}",
-      "url": "${ARM64_URL}"
-    },
-    "darwin-x86_64": {
-      "signature": "${X64_SIGNATURE}",
-      "url": "${X64_URL}"
-    }
-  }
-}
-EOF
-
-cd "$REPO_DIR"
-git add latest.json
-git commit -m "release: v${VERSION}"
-git push origin main
-
 echo ""
-echo "Done! Published v${VERSION}"
-echo "  GitHub Release: https://github.com/saputello2/keen-releases/releases/tag/v${VERSION}"
-echo "  Manifest:       https://raw.githubusercontent.com/saputello2/keen-releases/main/latest.json"
+echo "=== GitHub Release created ==="
+echo "  Release: https://github.com/${GH_REPO}/releases/tag/v${VERSION}"
+echo ""
+echo "Next steps:"
+echo "  1. Verify the release artifacts look correct"
+echo "  2. Deploy the backend to Fly.io:"
+echo "       ./publish-release.sh --deploy-fly ${VERSION} keen-dev-trial"
+echo "  3. After verifying /version, publish the client manifest:"
+echo "       ./publish-release.sh --publish-manifest ${VERSION}"
