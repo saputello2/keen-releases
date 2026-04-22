@@ -1,11 +1,50 @@
 {
-  "version": "0.7.0",
-  "notes": "Initial release with license gate and auto-updater",
-  "pub_date": "2026-03-24T18:41:19.000Z",
+  "version": "0.8.0",
+  "notes": "## What's New in v0.8.0
+
+### Platform
+- Intel Mac support (x86_64 dual-architecture builds)
+- Client↔backend version compatibility gate
+- Self-hoster update UX (guided backend upgrade flow)
+
+### Remote backend
+- Dual-mode connectivity with safe local↔remote switching
+- Mode-switch data transfer + remote mode UI polish
+- Remote-mode backup UI (iOS backend readiness)
+
+### Navigation & productivity
+- GoToSubPanel (⌘O) — global entity search and navigation
+- Unified mentions search with fuzzy matching
+- Custom list reordering — drag-and-drop + keyboard shortcuts
+- ⌥↑/⌥↓ keyboard reorder across entity sections
+- Page-jump (Page Up/Down) and first/last keyboard navigation
+- Shift+Arrow bulk selection with anchor-based extend/contract
+- Click-to-cycle status and priority icons everywhere
+
+### Entities
+- Entity template system — reusable templates with clone + filter integration
+- Inline entity creation from SubPanels across all pages
+- Milestone sub-grouping in task list project sort
+- Milestone linking/unlinking mutations
+- RRULE recurrence UI + NLP parser
+
+### Summary & onboarding
+- Summary sections — unified data pipeline with settings UI
+- Onboarding setup wizard for first-run users
+
+### Bug fixes
+- Resolve Intel WKWebView "Load failed" (signal forwarding, retry guard)
+- Distinguish route-change cancellations from real timeouts in GraphQL client
+- Search index delete triggers + stale result discard",
+  "pub_date": "2026-04-22T16:50:45.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVU2Y0RMdmMwdWJmNW8rQ2pONGlUWHBUbTlWNFBGSFBQOVVLTUdpY0ZyTXQ2QnBBZlJ5eUFLUkVhTjR2VUIwbkJ6ay9hQ25qcExnRCtpVGNJOXBZZlFZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc0Mzc3NTgzCWZpbGU6S2Vlbi5hcHAudGFyLmd6CnJkQXBsYkF6OFRjbU5xOGFMeWdUTVZiWFFiRTRZWFR0NWIxaUFhbE13YnBsbW02SGkzQis0dVZ0RCt0d2xDM0RjM3R4VzJJQjFPR0N2R3Y5ai9XL0FBPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.7.0/Keen.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVNQNGJqcFE1cHNSZFVNNEtSOWdLWlN2bzJObjBFZWMyRi9rMXNUclZOT1dlcG4ydklBMjJjZzJGaGo5dzZSOHlhZWcvWERXbnBpUXZTa3c4cDdEeVE4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODcxMjUyCWZpbGU6S2Vlbi5hcHAudGFyLmd6Ckt1RGpFNXFlUWVJSTNEZFlmZ1BTQ0lyNjA5TnVOTEFqTEJNTnQyemRvYm03MkhhTXptOXRtVUxUODhnYTgyMWdDMjNlOGl3WmMxUVRrVDM4MHJPVEN3PT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.8.0/Keen_0.8.0_aarch64.app.tar.gz"
+    },
+    "darwin-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWZsQ2ZFN2M5Y1pGUDhkSkZLTTFjNHAwRkdaenNvM3NzNkZ4K0JQcEY3SVU2SzU1NHlkS3hmWUgySUNzV09EbWpiVmFFaUNTV0YvVmtUc1VrWWNUNkFFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODcxNjk4CWZpbGU6S2Vlbi5hcHAudGFyLmd6CkxzVVFqSzBLbVFWZy8yd0V2NDM4dFRRSGFac3JwTWxZSXJRRHVaQ2F2bUl4ZlNQY3NaVjIvRk9jNGhWSEd2b3U5Y2ZNMDJNaTNMS3NLSUJ5NWh2c0RBPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.8.0/Keen_0.8.0_x64.app.tar.gz"
     }
   }
 }
