@@ -1,15 +1,15 @@
 {
-  "version": "0.9.0",
-  "notes": "## What's new in v0.9.0\n\n### Managed hosting (beta)\n- **New onboarding path** — pick \"Managed\" during setup and Keen will provision a server for you at `<your-subdomain>.thekeen.app` on our hosted infrastructure. No Docker, no Fly.io account, no DNS — you get a keep-alive URL and an auto-issued TLS certificate in under two minutes.\n- **Create a managed server from Settings** — existing local users can now move their data to a managed server without reopening the setup wizard. Look for \"Create Managed Server\" under Server Connection.\n- Signup and password rules on the client now match the server, so validation failures surface instantly rather than after a round trip.\n\n### Self-hosted: in-app update prompts\nSelf-hosted backends now surface available backend updates directly in Settings → Server Connection, complete with copy-paste Docker commands for pulling the new image.\n\n### Release notes you can actually read\nRelease notes in Settings → Updates are rendered as proper markdown (headings, lists, links) instead of raw text.\n\n### Polish\n- Settings section headings now carry consistent icons and styling.\n- License and Updates are separate bordered sub-sections under General.\n\n### Under the hood\n- Frontend is v0.9.0, backend is v0.9.0. The compat floor stays at v0.7.0 so mixed-version setups continue to work.\n- Fixed a dual-architecture release pipeline bug where the x86_64 updater artifact's filename didn't match what the publisher expected.",
-  "pub_date": "2026-04-22T21:23:24.000Z",
+  "version": "0.9.1",
+  "notes": "/tmp/keen-0.9.1-release-notes.md",
+  "pub_date": "2026-04-22T23:34:33.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVZlSUJyd1BMcHJVSU5lZFNHdDZmblZ1Y0ZZYzYyQVMzdUszTHBKZEI2QUwrYUdLa1lIblU1Q2FSanlDWlEzZEJ6K2ZtL09rU2hvRVRtVGNjcFRFYVFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODkyMTgzCWZpbGU6S2Vlbi5hcHAudGFyLmd6CnU5RnNzdWRFZGNzaUlPUnZPMkRXMTV0dVBLV1ZSbkEwK0srZUFXdWhDSHBoL1FuZWtFWU1aZitYV1llQ2NsVmJKb2ZIYTU5dXVEMnJuUzJzaXdUL0F3PT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.9.0/Keen_0.9.0_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVZoM3VadVh5dHZmTVovVFlXQXNxYWhPN0txSy9BUWNnbDhnZE1LcUVRZFpsS29aM2pnYkV4Q3k1eXZrQmhicElCVzFQeHVOdFh5Uzc1T1d1MEcxRlFnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODk5NjYyCWZpbGU6S2Vlbi5hcHAudGFyLmd6Ck9JNC8rNEkvMW1vOFpZVFpST3p4dWJBbzYzU2xlakgzSEJVcUQrY1dGajEvM3YzWFlVQ3l4aFVLcjRGMy9ZRTlURjR4QnZ6enQwTkZlaElOYzZsVkRRPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.9.1/Keen_0.9.1_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVlqQm13NzRpWFVyL3lyOG1GTDljUXliU3JOUStxZllzQUE0a2dMZkFGS3UxQnVDaFhicHluOTBnSUM3YUZnSGkySS9JdmdmQkhMZUZWbUN0RUJkY2dFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODkxOTAzCWZpbGU6S2Vlbi5hcHAudGFyLmd6CjVIVDMycEtKQjVzNFhEUWxIUFhNcGg0Z3pQaEJrTzJ6Z2ZjSDQzWjd5VVZ4K1VnakQ2eFZsQ2NDSEJrVEtRZngzbTJYY3NYTjFFYzN1VmxwV0lCT0NRPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.9.0/Keen_0.9.0_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVZlcTZEbHlqYU00Yy9mL1ByTmFjVlhoRm9JdEVwNk1VNy9MbWFhTnUydmQwVEc1SzlWWEpoT01JZ1FuTjJpd21LNkc4Y3ZGZkJVZ2FsNko3TDU1UXd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODk5NDIxCWZpbGU6S2Vlbi5hcHAudGFyLmd6CnpJQjhyc2w0dmNaS3RqdkRydTY3Y3RrYzZ3RTNjQjIrRjdtQVJjVnBQRFEyaGdBemZvMDFvUDIxU1F6NVEzOTVsd29FTjRvdFdtSGhTOHArRUdySUJnPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.9.1/Keen_0.9.1_x64.app.tar.gz"
     }
   }
 }
