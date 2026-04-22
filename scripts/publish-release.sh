@@ -242,13 +242,23 @@ if [[ $# -gt 0 && "$1" != --* ]]; then
 fi
 
 FRONTEND_DIR="$HOME/Developer/keen/keen-frontend"
-ARM64_BUNDLE="$FRONTEND_DIR/src-tauri/target/release/bundle"
+
+# arm64 bundle candidates: default build writes to target/release/bundle;
+# `--target aarch64-apple-darwin` writes to the triple-qualified path.
+# Pick whichever actually contains the version+arch-named updater tarball.
+ARM64_CANDIDATES=(
+  "$FRONTEND_DIR/src-tauri/target/release/bundle"
+  "$FRONTEND_DIR/src-tauri/target/aarch64-apple-darwin/release/bundle"
+)
+ARM64_BUNDLE=""
 X64_BUNDLE="$FRONTEND_DIR/src-tauri/target/x86_64-apple-darwin/release/bundle"
 
+# Optional explicit overrides (handled before auto-detect).
+ARM64_OVERRIDE=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --arm64-bundle)
-      ARM64_BUNDLE="${2:?--arm64-bundle requires a path}"
+      ARM64_OVERRIDE="${2:?--arm64-bundle requires a path}"
       shift 2
       ;;
     --x64-bundle)
@@ -261,6 +271,20 @@ while [[ $# -gt 0 ]]; do
       ;;
   esac
 done
+
+if [[ -n "$ARM64_OVERRIDE" ]]; then
+  ARM64_BUNDLE="$ARM64_OVERRIDE"
+else
+  for p in "${ARM64_CANDIDATES[@]}"; do
+    if [[ -f "$p/macos/Keen_${VERSION}_aarch64.app.tar.gz" ]]; then
+      ARM64_BUNDLE="$p"
+      break
+    fi
+  done
+  # Fall back to the default path so the missing-artifact error downstream
+  # has a sensible path to report.
+  [[ -z "$ARM64_BUNDLE" ]] && ARM64_BUNDLE="${ARM64_CANDIDATES[0]}"
+fi
 
 echo "=== Step A: Create GitHub Release v${VERSION} ==="
 echo ""
