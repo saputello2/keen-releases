@@ -22,8 +22,9 @@ Keen.app → checks latest.json → compares versions → downloads .tar.gz → 
 keen-releases/
 ├── latest.json                # Update manifest (Tauri updater format)
 ├── scripts/
-│   ├── publish-release.sh     # Three-step release pipeline (release → deploy → manifest)
-│   └── deploy-fly.sh          # Pre-deploy backup + rolling Fly.io deploy
+│   ├── publish-release.sh     # Multi-step release pipeline (release → deploy → registry → manifest)
+│   ├── deploy-fly.sh          # Pre-deploy backup + rolling Fly.io deploy
+│   └── push-fly-registry.sh   # Re-tag GHCR image → Fly private registry (for managed hosting)
 └── README.md
 ```
 
@@ -95,7 +96,7 @@ DMG artifacts are already version + arch qualified by Tauri
 See `docs/build/dual-architecture-builds.md` in the sibling `keen-frontend` repo
 for the full arm64 and x86_64 build procedures.
 
-The release pipeline is a **three-step flow** that enforces backend deployment
+The release pipeline is a **multi-step flow** that enforces backend deployment
 before the client manifest goes live. This ensures clients never see an update
 pointing at a not-yet-deployed backend.
 
@@ -123,9 +124,12 @@ cd ~/Developer/keen/keen-releases
 # 5. Step B — Deploy backend to Fly.io (pre-deploy backup + rolling deploy)
 ./scripts/publish-release.sh --deploy-fly "$VERSION" keen-dev-trial
 
-# 6. Verify /version reports the new version on each managed app
+# 6. Verify /version reports the new version
 
-# 7. Step C — Publish client manifest (writes latest.json, commits, pushes)
+# 7. Step B2 — Push image to Fly registry (for managed hosting provisioning)
+./scripts/publish-release.sh --push-fly-registry "$VERSION"
+
+# 8. Step C — Publish client manifest (writes latest.json, commits, pushes)
 ./scripts/publish-release.sh --publish-manifest "$VERSION"
 ```
 
@@ -136,6 +140,11 @@ update yet.
 **Step B** calls `deploy-fly.sh`, which takes a pre-deploy `pg_dump` backup on the
 Fly volume, performs a rolling deploy with the tagged GHCR image, and verifies
 `/version` reports the expected version.
+
+**Step B2** calls `push-fly-registry.sh`, which pulls the image from GHCR, retags
+it for `registry.fly.io/keen-backend-images`, and pushes it to Fly's private
+registry. This is required for managed hosting — the provisioning service creates
+per-user Machines that pull from this registry (Fly cannot pull from private GHCR).
 
 **Step C** downloads the `.sig` files from the GitHub Release, writes `latest.json`
 with both platform entries, and pushes to `main`. A confirmation prompt prevents
@@ -211,7 +220,7 @@ flyctl releases rollback <prev-release-id> --app "$APP"
 
 # 2. Restore the database from the pre-deploy backup
 flyctl ssh console --app "$APP" -C \
-  "su postgres -c 'pg_restore -c -d knowledge_explorer /data/backups/${BACKUP}'"
+  'bash -c "PGPASSWORD=\$POSTGRES_PASSWORD pg_restore -U postgres -c -d knowledge_explorer /data/backups/'"${BACKUP}"'"'
 ```
 
 Only the last 5 backups are retained; older ones are pruned automatically.

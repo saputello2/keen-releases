@@ -2,21 +2,25 @@
 # ============================================================================
 # publish-release.sh
 # ============================================================================
-# Three-step release pipeline for Keen. Each step is a separate invocation:
+# Multi-step release pipeline for Keen. Each step is a separate invocation:
 #
 #   Step A — Create GitHub Release (client artifacts only)
 #     publish-release.sh <version> [release-notes] \
 #       [--arm64-bundle <dir>] [--x64-bundle <dir>]
 #
-#   Step B — Deploy backend to Fly.io
+#   Step B — Deploy backend to Fly.io (dev/personal instance)
 #     publish-release.sh --deploy-fly <version> <app-name>
+#
+#   Step B2 — Push image to Fly registry (for managed hosting provisioning)
+#     publish-release.sh --push-fly-registry <version>
 #
 #   Step C — Publish client update manifest (latest.json)
 #     publish-release.sh --publish-manifest <version>
 #
-# The three-step flow enforces: deploy backend BEFORE publishing the client
+# The multi-step flow enforces: deploy backend BEFORE publishing the client
 # manifest, so clients never see an update pointing at a not-yet-deployed
-# backend.
+# backend. Step B2 ensures managed hosting can provision new servers with
+# the same image version.
 #
 # Expects the renamed updater artifacts produced by
 # keen-frontend/scripts/rename-updater-artifacts.sh:
@@ -46,6 +50,9 @@ Usage:
 
   Step B — Deploy backend to Fly.io:
     publish-release.sh --deploy-fly <version> <app-name>
+
+  Step B2 — Push image to Fly registry (managed hosting):
+    publish-release.sh --push-fly-registry <version>
 
   Step C — Publish client manifest:
     publish-release.sh --publish-manifest <version>
@@ -78,6 +85,27 @@ case "$1" in
     fi
 
     "$SCRIPT_DIR/deploy-fly.sh" "$VERSION" "$APP_NAME"
+    exit $?
+    ;;
+
+  --push-fly-registry)
+    # ── Step B2: Push image to Fly registry for managed hosting ──
+    shift
+    if [[ $# -lt 1 ]]; then
+      echo "Usage: publish-release.sh --push-fly-registry <version>" >&2
+      exit 1
+    fi
+    VERSION="$1"
+
+    echo "=== Step B2: Push keen-backend ${VERSION} to Fly registry ==="
+    echo ""
+
+    if [[ ! -x "$SCRIPT_DIR/push-fly-registry.sh" ]]; then
+      echo "ERROR: push-fly-registry.sh not found at $SCRIPT_DIR/push-fly-registry.sh" >&2
+      exit 1
+    fi
+
+    "$SCRIPT_DIR/push-fly-registry.sh" "$VERSION"
     exit $?
     ;;
 
@@ -148,23 +176,38 @@ case "$1" in
       exit 1
     fi
 
-    cat > "${REPO_DIR}/latest.json" <<EOF
-{
-  "version": "${VERSION}",
-  "notes": "${NOTES}",
-  "pub_date": "${PUB_DATE}",
-  "platforms": {
-    "darwin-aarch64": {
-      "signature": "${ARM64_SIGNATURE}",
-      "url": "${ARM64_URL}"
-    },
-    "darwin-x86_64": {
-      "signature": "${X64_SIGNATURE}",
-      "url": "${X64_URL}"
-    }
-  }
-}
-EOF
+    # Build latest.json via jq so the notes (which contain newlines, quotes,
+    # backticks, and Unicode) are correctly JSON-escaped. Direct heredoc
+    # interpolation produces invalid JSON as soon as $NOTES contains any
+    # character that needs escaping, which silently breaks every client's
+    # update check.
+    if ! command -v jq >/dev/null 2>&1; then
+      echo "ERROR: jq is required to build latest.json. Install it (brew install jq)." >&2
+      exit 1
+    fi
+    jq -n \
+      --arg version "$VERSION" \
+      --arg notes "$NOTES" \
+      --arg pub_date "$PUB_DATE" \
+      --arg arm64_sig "$ARM64_SIGNATURE" \
+      --arg arm64_url "$ARM64_URL" \
+      --arg x64_sig "$X64_SIGNATURE" \
+      --arg x64_url "$X64_URL" \
+      '{
+        version: $version,
+        notes: $notes,
+        pub_date: $pub_date,
+        platforms: {
+          "darwin-aarch64": { signature: $arm64_sig, url: $arm64_url },
+          "darwin-x86_64":  { signature: $x64_sig,   url: $x64_url }
+        }
+      }' > "${REPO_DIR}/latest.json"
+
+    # Sanity-check that the generated file actually parses.
+    if ! jq empty "${REPO_DIR}/latest.json" >/dev/null 2>&1; then
+      echo "ERROR: Generated latest.json is not valid JSON." >&2
+      exit 1
+    fi
 
     cd "$REPO_DIR"
     git add latest.json
@@ -273,5 +316,7 @@ echo "Next steps:"
 echo "  1. Verify the release artifacts look correct"
 echo "  2. Deploy the backend to Fly.io:"
 echo "       ./publish-release.sh --deploy-fly ${VERSION} keen-dev-trial"
-echo "  3. After verifying /version, publish the client manifest:"
+echo "  3. Push the image to Fly registry (for managed hosting):"
+echo "       ./publish-release.sh --push-fly-registry ${VERSION}"
+echo "  4. After verifying /version, publish the client manifest:"
 echo "       ./publish-release.sh --publish-manifest ${VERSION}"

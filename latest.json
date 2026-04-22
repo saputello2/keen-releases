@@ -1,42 +1,7 @@
 {
   "version": "0.8.0",
-  "notes": "## What's New in v0.8.0
-
-### Platform
-- Intel Mac support (x86_64 dual-architecture builds)
-- Client↔backend version compatibility gate
-- Self-hoster update UX (guided backend upgrade flow)
-
-### Remote backend
-- Dual-mode connectivity with safe local↔remote switching
-- Mode-switch data transfer + remote mode UI polish
-- Remote-mode backup UI (iOS backend readiness)
-
-### Navigation & productivity
-- GoToSubPanel (⌘O) — global entity search and navigation
-- Unified mentions search with fuzzy matching
-- Custom list reordering — drag-and-drop + keyboard shortcuts
-- ⌥↑/⌥↓ keyboard reorder across entity sections
-- Page-jump (Page Up/Down) and first/last keyboard navigation
-- Shift+Arrow bulk selection with anchor-based extend/contract
-- Click-to-cycle status and priority icons everywhere
-
-### Entities
-- Entity template system — reusable templates with clone + filter integration
-- Inline entity creation from SubPanels across all pages
-- Milestone sub-grouping in task list project sort
-- Milestone linking/unlinking mutations
-- RRULE recurrence UI + NLP parser
-
-### Summary & onboarding
-- Summary sections — unified data pipeline with settings UI
-- Onboarding setup wizard for first-run users
-
-### Bug fixes
-- Resolve Intel WKWebView "Load failed" (signal forwarding, retry guard)
-- Distinguish route-change cancellations from real timeouts in GraphQL client
-- Search index delete triggers + stale result discard",
-  "pub_date": "2026-04-22T16:50:45.000Z",
+  "notes": "## What's New in v0.8.0\n\n### Platform\n- Intel Mac support (x86_64 dual-architecture builds)\n- Client↔backend version compatibility gate\n- Self-hoster update UX (guided backend upgrade flow)\n\n### Remote backend\n- Dual-mode connectivity with safe local↔remote switching\n- Mode-switch data transfer + remote mode UI polish\n- Remote-mode backup UI (iOS backend readiness)\n\n### Navigation & productivity\n- GoToSubPanel (⌘O) — global entity search and navigation\n- Unified mentions search with fuzzy matching\n- Custom list reordering — drag-and-drop + keyboard shortcuts\n- ⌥↑/⌥↓ keyboard reorder across entity sections\n- Page-jump (Page Up/Down) and first/last keyboard navigation\n- Shift+Arrow bulk selection with anchor-based extend/contract\n- Click-to-cycle status and priority icons everywhere\n\n### Entities\n- Entity template system — reusable templates with clone + filter integration\n- Inline entity creation from SubPanels across all pages\n- Milestone sub-grouping in task list project sort\n- Milestone linking/unlinking mutations\n- RRULE recurrence UI + NLP parser\n\n### Summary & onboarding\n- Summary sections — unified data pipeline with settings UI\n- Onboarding setup wizard for first-run users\n\n### Bug fixes\n- Resolve Intel WKWebView \"Load failed\" (signal forwarding, retry guard)\n- Distinguish route-change cancellations from real timeouts in GraphQL client\n- Search index delete triggers + stale result discard\n",
+  "pub_date": "2026-04-22T16:51:33.000Z",
   "platforms": {
     "darwin-aarch64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVNQNGJqcFE1cHNSZFVNNEtSOWdLWlN2bzJObjBFZWMyRi9rMXNUclZOT1dlcG4ydklBMjJjZzJGaGo5dzZSOHlhZWcvWERXbnBpUXZTa3c4cDdEeVE4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODcxMjUyCWZpbGU6S2Vlbi5hcHAudGFyLmd6Ckt1RGpFNXFlUWVJSTNEZFlmZ1BTQ0lyNjA5TnVOTEFqTEJNTnQyemRvYm03MkhhTXptOXRtVUxUODhnYTgyMWdDMjNlOGl3WmMxUVRrVDM4MHJPVEN3PT0K",
