@@ -1,15 +1,15 @@
 {
-  "version": "0.9.1",
-  "notes": "/tmp/keen-0.9.1-release-notes.md",
-  "pub_date": "2026-04-22T23:34:33.000Z",
+  "version": "0.9.2",
+  "notes": "## Fixes\n\n- **Managed hosting provisioning**: First-time `Create Managed Server` no longer fails with `TypeError: \"Load failed\"`. Two underlying races fixed:\n  - Fly machines for managed servers now stay warm (`autostop=false`, `min_machines_running=1`), eliminating ~15s cold-start 502s that WebKit surfaces as a generic load error. Cost: one always-on `shared-cpu-2x` VM per user (~$5/mo).\n  - The provisioning worker now waits for the public `<subdomain>.thekeen.app` hostname to serve a valid Let's Encrypt cert before returning to the client, closing a 20–30s race against ACME HTTP-01 issuance where the client's initial transfer upload would fail the TLS handshake.\n- **Transfer populated-DB guard**: Fixed `operator does not exist: uuid <> uuid[]` SQL error that caused first-time remote uploads to 409 with `remote_check_failed`. The guard query now passes seed-id arrays directly to `ALL()` instead of wrapping them in a CTE subquery.\n\n## Diagnostics\n\n- `switchToRemote` failure logs now include the transfer phase (`backing-up` / `uploading` / `transferring-keychain` / `saving-config` / `restarting`) and the remote URL, so opaque `\"Load failed\"` errors can be triaged without cross-referencing server logs.",
+  "pub_date": "2026-04-23T01:51:12.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVZoM3VadVh5dHZmTVovVFlXQXNxYWhPN0txSy9BUWNnbDhnZE1LcUVRZFpsS29aM2pnYkV4Q3k1eXZrQmhicElCVzFQeHVOdFh5Uzc1T1d1MEcxRlFnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODk5NjYyCWZpbGU6S2Vlbi5hcHAudGFyLmd6Ck9JNC8rNEkvMW1vOFpZVFpST3p4dWJBbzYzU2xlakgzSEJVcUQrY1dGajEvM3YzWFlVQ3l4aFVLcjRGMy9ZRTlURjR4QnZ6enQwTkZlaElOYzZsVkRRPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.9.1/Keen_0.9.1_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWMyMHBkaGI2R1VzcXhhbitMNzVzMlcvYi9IbE5zTTVkLzJqaGk4eGtaTUhkQzNiRkFtaGtpS3pIL2lvZGk4SFA1NVk2MDNUMHY0VzZyYm5KTm9Samc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2OTA3NDAxCWZpbGU6S2Vlbi5hcHAudGFyLmd6CmpSTC9JMVJWWXcvMjB6aWR3WXdvQUFOdlJvNnZ4UVFxUmczTGJyeHJOQjd5SWp1OFcrR2VkN3JuWlZNYXRRV09UZTNPRENDektvbXIzZ2hkOWQ5Y0NnPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.9.2/Keen_0.9.2_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVZlcTZEbHlqYU00Yy9mL1ByTmFjVlhoRm9JdEVwNk1VNy9MbWFhTnUydmQwVEc1SzlWWEpoT01JZ1FuTjJpd21LNkc4Y3ZGZkJVZ2FsNko3TDU1UXd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODk5NDIxCWZpbGU6S2Vlbi5hcHAudGFyLmd6CnpJQjhyc2w0dmNaS3RqdkRydTY3Y3RrYzZ3RTNjQjIrRjdtQVJjVnBQRFEyaGdBemZvMDFvUDIxU1F6NVEzOTVsd29FTjRvdFdtSGhTOHArRUdySUJnPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.9.1/Keen_0.9.1_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVFmNlk0U3JsbGIxZWNXZWNBRHJ1UngwS2t5aHRZSkJTWHplbnJTZ0RhRjBSWlRCbWNFblhOSGN0cENNQklWU1V6Q09kQTE1bHQ2UEFaNGRTMURxTEFjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2OTA2Nzc3CWZpbGU6S2Vlbi5hcHAudGFyLmd6Cnd5VjFHY3RKMzR3UXdXcVpPWTlSV0Z6V3NkY0dRV0JGd0E5bUpTbFc3a2MyaERBcldYVXlKSi9uM1lKRktFaVU4Mm5aNWpzWnVDL3hXbkJUaVlyaER3PT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.9.2/Keen_0.9.2_x64.app.tar.gz"
     }
   }
 }
