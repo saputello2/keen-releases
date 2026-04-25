@@ -7,24 +7,34 @@ This repo hosts the `latest.json` manifest consumed by Keen's built-in auto-upda
 ## How It Works
 
 ```
-Keen.app → checks latest.json → compares versions → downloads .tar.gz → verifies Ed25519 signature → installs
+User triggers check → Keen.app fetches latest.json → compares versions → downloads .tar.gz → verifies Ed25519 signature → relaunch with new bundle
 ```
 
-1. On startup (8s delay) and via Settings > Updates, Keen fetches `latest.json` from this repo
-2. If a newer version is available, the user is prompted to download and install
-3. The `.tar.gz` update artifact is downloaded from the GitHub Release
-4. The Ed25519 signature is verified against the public key baked into the app
-5. The app is replaced and relaunched
+Update checks are **always user-initiated** — there is no automatic startup or background poll. The three entry points are:
+
+1. **macOS app menu** → "Keen" → "Check for Updates…" (emits `menu:check-updates`)
+2. **System tray menu** → "Check for Updates…" (also emits `menu:check-updates`)
+3. **Settings → Updates** → "Check for Updates" button
+
+All three feed `useAppUpdater` (`keen-frontend/src/hooks/useAppUpdater.ts`), which:
+
+1. Fetches `latest.json` from this repo via `https://raw.githubusercontent.com/saputello2/keen-releases/main/latest.json`
+2. Prompts the user if a newer version is available
+3. Downloads the `.tar.gz` update artifact from the matching GitHub Release
+4. Verifies the Ed25519 signature against the public key baked into the app
+5. Replaces the app on disk and relaunches
 
 ## Repository Structure
 
 ```
 keen-releases/
-├── latest.json                # Update manifest (Tauri updater format)
+├── latest.json                                # Update manifest (Tauri updater format)
 ├── scripts/
-│   ├── publish-release.sh     # Multi-step release pipeline (release → deploy → registry → manifest)
-│   ├── deploy-fly.sh          # Pre-deploy backup + rolling Fly.io deploy
-│   └── push-fly-registry.sh   # Re-tag GHCR image → Fly private registry (for managed hosting)
+│   ├── publish-release.sh                     # Multi-step release pipeline (release → deploy → registry → manifest)
+│   ├── deploy-fly.sh                          # Pre-deploy backup + rolling Fly.io deploy
+│   └── push-fly-registry.sh                   # Re-tag GHCR image → Fly private registry (legacy / optional)
+├── .github/workflows/
+│   └── validate-manifest.yml                  # CI gate: validates JSON shape, semver, ISO 8601 pub_date, non-empty signatures, reachable artifact URLs on every push/PR touching latest.json
 └── README.md
 ```
 
@@ -39,17 +49,17 @@ keen-frontend/scripts/
 
 ```json
 {
-  "version": "0.8.0",
+  "version": "0.10.0",
   "notes": "## What's New\n\n- Feature X\n- Bug fix Y",
-  "pub_date": "2026-04-01T00:00:00.000Z",
+  "pub_date": "2026-04-25T00:00:00.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "<contents of Keen_0.8.0_aarch64.app.tar.gz.sig>",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.8.0/Keen_0.8.0_aarch64.app.tar.gz"
+      "signature": "<contents of Keen_0.10.0_aarch64.app.tar.gz.sig>",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.10.0/Keen_0.10.0_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "<contents of Keen_0.8.0_x64.app.tar.gz.sig>",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.8.0/Keen_0.8.0_x64.app.tar.gz"
+      "signature": "<contents of Keen_0.10.0_x64.app.tar.gz.sig>",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.10.0/Keen_0.10.0_x64.app.tar.gz"
     }
   }
 }
@@ -90,20 +100,53 @@ DMG artifacts are already version + arch qualified by Tauri
 - Tauri signing key at `~/.tauri/keen-updater.key`
 - Apple Developer ID certificate in Keychain
 - `gh` CLI authenticated (`gh auth status`)
+- Required environment variables exported in the shell that runs `npm run tauri build`:
+
+  ```bash
+  export TAURI_SIGNING_PRIVATE_KEY=$(cat ~/.tauri/keen-updater.key)
+  # Only required if the signing key is password-protected (it is, for the keen-updater key):
+  export TAURI_SIGNING_PRIVATE_KEY_PASSWORD="<password>"
+  # Required for Apple notarization:
+  export APPLE_SIGNING_IDENTITY="Developer ID Application: Eric Perley (WYC399Z9G3)"
+  ```
+
+  Without `TAURI_SIGNING_PRIVATE_KEY[_PASSWORD]`, `tauri build` will silently skip the `.tar.gz.sig` files and the auto-updater will reject the release. Without `APPLE_SIGNING_IDENTITY`, notarization fails and Gatekeeper will block the bundle.
+
+### Step 0 — Bump version (must match across three files)
+
+Before any build, bump the version in **three** source-of-truth files:
+
+| File | Field |
+|---|---|
+| `keen-frontend/src-tauri/tauri.conf.json` | `"version"` |
+| `keen-frontend/src-tauri/Cargo.toml` | `[package].version` |
+| `keen-frontend/package.json` | `"version"` |
+
+Then re-sync lockfiles so they don't lag:
+
+```bash
+cd ~/Developer/keen/keen-frontend && npm install
+cd ~/Developer/keen/keen-backend && npm install
+```
+
+`Cargo.lock` and both `package-lock.json` self-references update automatically. `latest.json` is **regenerated** by Step C — never hand-edit it.
+
+> **CI gate:** `keen-provisioning`'s `/recover-token` route version-gates against `keen-backend >= <frontend-version>`. Bump backend in lockstep (`keen-backend/package.json`) when bumping the desktop frontend, or recovery on existing managed servers will start returning `503`.
 
 ### Steps
 
 See `docs/build/dual-architecture-builds.md` in the sibling `keen-frontend` repo
-for the full arm64 and x86_64 build procedures.
+for the full arm64 and x86_64 build procedures (LanceDB native addon, OpenSSL
+rpath, PG binary prep).
 
 The release pipeline is a **multi-step flow** that enforces backend deployment
 before the client manifest goes live. This ensures clients never see an update
 pointing at a not-yet-deployed backend.
 
 ```bash
-VERSION=0.8.0
+VERSION=0.10.0
 cd ~/Developer/keen/keen-frontend
-export TAURI_SIGNING_PRIVATE_KEY=$(cat ~/.tauri/keen-updater.key)
+# (env vars from Prerequisites above already exported)
 
 # 1. Build arm64 (Apple Silicon) — native
 npm run tauri build
@@ -126,7 +169,11 @@ cd ~/Developer/keen/keen-releases
 
 # 6. Verify /version reports the new version
 
-# 7. Step B2 — Push image to Fly registry (for managed hosting provisioning)
+# 7. Step B2 — Push image to Fly registry (legacy / optional —
+#    only needed if any managed-hosting machines still pull from
+#    registry.fly.io/keen-backend-images. New provisions pull GHCR directly
+#    via KEEN_IMAGE_REGISTRY=ghcr.io/saputello2/keen-backend in
+#    keen-provisioning/wrangler.toml.)
 ./scripts/publish-release.sh --push-fly-registry "$VERSION"
 
 # 8. Step C — Publish client manifest (writes latest.json, commits, pushes)
@@ -141,10 +188,12 @@ update yet.
 Fly volume, performs a rolling deploy with the tagged GHCR image, and verifies
 `/version` reports the expected version.
 
-**Step B2** calls `push-fly-registry.sh`, which pulls the image from GHCR, retags
-it for `registry.fly.io/keen-backend-images`, and pushes it to Fly's private
-registry. This is required for managed hosting — the provisioning service creates
-per-user Machines that pull from this registry (Fly cannot pull from private GHCR).
+**Step B2** (legacy / optional) calls `push-fly-registry.sh`, which pulls the
+image from GHCR, retags it for `registry.fly.io/keen-backend-images`, and pushes
+it to Fly's private registry. **New managed-hosting provisions pull GHCR directly**
+(`KEEN_IMAGE_REGISTRY = "ghcr.io/saputello2/keen-backend"` in
+`keen-provisioning/wrangler.toml`), so this step is only required if you maintain
+machines that were provisioned against the legacy Fly registry mirror.
 
 **Step C** downloads the `.sig` files from the GitHub Release, writes `latest.json`
 with both platform entries, and pushes to `main`. A confirmation prompt prevents
@@ -153,11 +202,13 @@ accidental publishes. After this step, clients see the update.
 ### Backend image on GHCR
 
 The `keen-backend` repo has a GitHub Actions workflow (`publish-image.yml`) that
-builds and pushes a Docker image to GHCR on every `v*` tag push:
+builds and pushes Docker images to GHCR on every `v*` tag push:
 
 ```
-ghcr.io/saputello2/keen-backend:<version>   (e.g. 0.8.0)
+ghcr.io/saputello2/keen-backend:<version>            (e.g. 0.10.0; managed hosting)
 ghcr.io/saputello2/keen-backend:latest
+ghcr.io/saputello2/keen-backend-selfhost:<version>   (e.g. 0.10.0; self-hosters)
+ghcr.io/saputello2/keen-backend-selfhost:latest
 ```
 
 Tag the backend repo before running Step B:
@@ -166,13 +217,45 @@ Tag the backend repo before running Step B:
 cd ~/Developer/keen/keen-backend
 git tag v${VERSION}
 git push origin v${VERSION}
-# Wait for the GitHub Actions workflow to complete
+# Wait for the GitHub Actions workflow to complete (about 3 minutes)
+gh run watch --repo saputello2/keen-backend
 ```
+
+> If `v${VERSION}` already exists (e.g. you tagged earlier in the cycle and want to rebuild from a more recent commit), delete and recreate the tag:
+> ```bash
+> git tag -d v${VERSION} && git push origin :refs/tags/v${VERSION}
+> git tag v${VERSION} && git push origin v${VERSION}
+> ```
+> The `publish-image.yml` workflow will overwrite the GHCR tag.
 
 The Tauri updater fetches `latest.json` from:
 ```
 https://raw.githubusercontent.com/saputello2/keen-releases/main/latest.json
 ```
+
+### Pre-flight verification (recommended before Step C)
+
+Step A uploads artifacts and Step B deploys the backend, but **clients won't see
+the update until Step C** flips `latest.json`. Use that window to test:
+
+```bash
+# Smoke-test that the artifact is downloadable and signature-verifiable
+gh release download "v$VERSION" \
+  --repo saputello2/keen-releases \
+  --pattern "Keen_${VERSION}_aarch64.app.tar.gz*" \
+  --dir /tmp/keen-release-smoke
+
+# Confirm signature file is non-empty
+test -s "/tmp/keen-release-smoke/Keen_${VERSION}_aarch64.app.tar.gz.sig"
+
+# Run the freshly-built app from /tmp/keen-release-smoke and exercise key flows
+# (managed hosting connect, mode switch, destroy, recovery) before committing
+# to publish the manifest.
+```
+
+Step C also runs `validate-manifest.yml` against the manifest before clients
+fetch it (semver shape, ISO 8601 `pub_date`, non-empty `signature` blocks,
+reachable artifact URLs).
 
 ## Rollback
 
