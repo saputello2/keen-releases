@@ -1,0 +1,5 @@
+# Internal operations runbook (release pipeline, rollback procedures,
+# migration policy, infrastructure detail). This repo is public, so any
+# operator-facing documentation that maps internal infrastructure must
+# live here, untracked, rather than in the public README.
+docs/
