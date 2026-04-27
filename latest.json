@@ -1,15 +1,15 @@
 {
-  "version": "0.10.0",
-  "notes": "## Highlights\n\n**Managed-hosting UX hardening sweep**\n\n- **In-app server destroy** — Settings → General now lists every managed server on your account with one-click Copy URL + Destroy. Destroy is gated by an optimistic lock on the worker so concurrent attempts return a clean 409 instead of corrupting state, and the active server's keychain entry is cleared automatically.\n- **Mode-switch resume marker** — local↔remote transfers now write a marker on every phase transition; on next launch a non-dismissable dialog detects an interrupted transfer and offers a \"Discard attempt\" path that re-aligns config with the booted-into mode.\n- **Auth-failure banner** — backend rejecting your token (4401 WS close or `UNAUTHENTICATED` GraphQL extension) now surfaces a banner with three CTAs: Recover token, Update manually, or Work offline for now. Replaces the generic \"disconnected\" modal in remote mode.\n- **Token-recovery polish** — recovery errors now surface the worker's `correlationId` so support can cross-reference D1 audit logs; the mint button shows an explicit loading state during the round-trip.\n\n**Joint with keen-backend 0.10.0**\n\nThis release pairs with `keen-backend@0.10.0`, which ships the new `POST /api/recovery/mint-token` route used by the in-app token-recovery flow. The provisioning Worker version-gates `/recover-token` to backends ≥ 0.10.0, so older managed servers continue to work but won't offer recovery until they're rolled forward.\n\n---\n\nFull changelog: https://github.com/saputello2/keen-frontend/blob/main/CHANGELOG.md#0100---2026-04-25",
-  "pub_date": "2026-04-25T02:50:14.000Z",
+  "version": "0.11.0",
+  "notes": "OAuth proxy + UX improvements",
+  "pub_date": "2026-04-27T12:49:22.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVRtd1I0V0p2RDc5ZW9QZFFZczM2QnVZWVFQYUZMb1FEOXA0SE5BNXc5Nm16TW9CSHI2bmJoY0RCVWZEMjMzMGNOWXF5N3pTcy9LbGZkcmhQdHNxcUFVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3MDg0OTkxCWZpbGU6S2Vlbi5hcHAudGFyLmd6ClhJczFhMjZLcXBTYTEyRXhURVh5elRTUVRSRHNNNDBLTS9URFVGci8vaGJ1N0hYT2xRaGV0SldHQzNRbFlmZVpySnEwK29JOUdmeXpSckthR0ZpYkJnPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.10.0/Keen_0.10.0_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVNzRVNTN1o0VzhMbnVha3oyaW8xc3FYSE9lVGRMVUJTd0h3dS9qNzF2UkFHUEE0Y2NzNkR5Qk1XeTUza212TnJaWVFWTnVNWlZ1TWZGUVJCdzJMV1FZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3MjkyNjE5CWZpbGU6S2Vlbi5hcHAudGFyLmd6CmliYTNEdEs2OXBoNzVScW8rNHE5SE4zV21SMkkwREMzNUZEMy84aHBTWFpZYWFpQmFaY3Y5YVhKellYUGJNSXdaZUxUVVMwejNRVW1ObHJKMkJjMkNnPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.11.0/Keen_0.11.0_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWRZWVc2WmROYndoTjhaWHB1QmNTbzRKUXZ6bFdrdGNhYVpBM3c3T0tKNXZUTFM0ektFZWhIbmMzb3ROMEVsMEMxazA3RzJZd1BiN0V5emZKcGIrNGdjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3MDg0Nzk2CWZpbGU6S2Vlbi5hcHAudGFyLmd6CkdtVldKemIxc2s0TnhXQlNQK3ZtSnFiVEU3RVhacVRGSnVKaklsakZwUjJYMWI1LzRUcG50LzZhakVCRGJWSWNPSnJGeGVLcnVTK3hCdXc4QXIvQ0R3PT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.10.0/Keen_0.10.0_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWQrQ1hwZXlIY05KQUIrUlQ3ZnJTT1RSQ2lqa3ZJelRhazc3eVRDdThCSTRzSXo5cmhhVFlhRWFMK3E1SkhTK2w4WXc1Y01jamhBVHorNWtYUHVIdEF3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3MjkyMzk0CWZpbGU6S2Vlbi5hcHAudGFyLmd6Cm0wbDV0K3hjbjl5Z1NCMHdDMlRMbW9maUNOVUMrTnI1bFZiaEJ2QnJYZlhyTjJ4VTdXMEtUVTgzVlhpSEpGRU9vekRzeWhlaXZHNTZtNUEyaFJnaEN3PT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.11.0/Keen_0.11.0_x64.app.tar.gz"
     }
   }
 }
