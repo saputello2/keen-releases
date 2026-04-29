@@ -1,15 +1,15 @@
 {
-  "version": "0.12.0",
-  "notes": "# Keen 0.12.0 — Chat & Markdown Attachments\n\nAttach files to chats and reference them inline in your markdown. Bytes are stored locally (or on your managed Fly tenant) and travel with bundle export/import.\n\n## What's new\n\n- **Attach files in chat:** drag & drop, paste, or press **⌘U** to upload. The composer now spans the full width and works keyboard-first.\n- **Inline attachments in markdown:** images and documents render with previews and download links wherever they're embedded.\n- **Bundle export/import preserves attachments:** raw bytes ship with the rest of your knowledge, so backups and migrations stay lossless.\n- **New commands & shortcuts:** `chat.sendMessage` (↩) and `chat.uploadFile` (⌘U) are first-class commands — discoverable in the Action Panel and remappable like any other shortcut.\n\n## Managed hosting\n\n- Tenant Fly machines now configure `ATTACHMENTS_DIR=/data/attachments` automatically on provisioning. Existing machines are unaffected unless updated.\n- Backend image bumped to `0.12.0` — required for attachment GraphQL operations.\n\n## Fixes\n\n- Streaming hash + byte-count is now race-free across attachment storage adapters.\n- SHA-256 helper handles jsdom realm-mismatch in test environments.",
-  "pub_date": "2026-04-29T16:39:27.000Z",
+  "version": "0.12.1",
+  "notes": "# Keen 0.12.1 — Attachments hotfix\n\nFixes attachment uploads against managed-Fly tenants. 0.12.0 shipped two issues that broke chat and markdown attachments end-to-end:\n\n## Fixes\n\n- **CORS preflight** missing `X-Content-SHA256` in the allow-headers list caused every upload to fail with \"Upload network error\" before the request reached the server (backend 0.12.1).\n- **Upload URL** was missing the required `?scope=chat|markdown` query param, so requests that did reach the server returned 400 \"Invalid scope\". Symptoms: chat attachments failed, markdown image embeds rendered as empty frames.\n\nIf you were on 0.12.0 with attempted-but-stuck uploads, you can clear them safely:\n\n- `~/Library/Application Support/app.thekeen.macos/upload-queue.json`\n- `~/Library/Application Support/app.thekeen.macos/uploads/`",
+  "pub_date": "2026-04-29T17:55:28.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVZCWXNXZStFeW4yZ1dReEg4emw3NjlRUFlJeUZCVEF3RlVIZWlzaWxnTDFwKzBacFVaQ1diN2dqUzJYV29JR3VnbG0xRFY0b2RkUUFocVY1V29Mbmc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3NDgwNTUxCWZpbGU6S2Vlbi5hcHAudGFyLmd6CngxK293K2V2eGFJVnlFalRJaXArME5JL1U0Z0VUYWdMblN0OW80RkpPZzFmaTFJNU5rVDVnKzg2SWtibnN3dHRYM1VGVUUwd2RubTNxR0s2dGlwTUJnPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.12.0/Keen_0.12.0_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWRQWU5aR01xdkdETXBjemZuRTVua0Nna2xNMTRKVlZlSzd2d0V0WHkvQ1F4NnUrQWR3Ry9GempCQlRSaWRDWkVYS2R2T3RSK1NRUWRXYmgyd1gvaVFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3NDg1MTc1CWZpbGU6S2Vlbi5hcHAudGFyLmd6CkhZR1gwcFBkaUJkY3RsdldvYmVXM0FJc2ttRmgrQWJkeXZDVjBaL3BMQlJRazF6Z3B3SjFtZVlEMk9VQlFyd0E0UDRlSjI2RGR6UFdlVUt2MVhIQ0RRPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.12.1/Keen_0.12.1_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWN1N2VsSmZqby9YL2hRVFE1VTF1elpzNG4xM1FwQ1BEM3VPaHhTMzRUMGZiSHdUT1orZTk3QzBxYjRqM2xsZEkya011S0NXLzdEeTc2RWRQemswY2dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3NDgwMzM2CWZpbGU6S2Vlbi5hcHAudGFyLmd6CnpESkZRK3FMYldhMzB6RGxoNGp0Z05oQ1dFdTY1Vkx4dCsxTmhaUVV4NVA1dnZ5elRoNXdGOHErdWRKNUhWMmhaR3pTMVdPaXFBZklqa0FjNXYvbURRPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.12.0/Keen_0.12.0_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWUxWnV0bDJtWUF1S3VkbXdtcE1PMzNSNHRBQ3pDb1dSdS95dW00c01EK3ZQaHRvZjl3c3picGdLcHpaOXZkMG13aXY3SERoRzhGSGlKT1hHTzdVdncwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3NDg0ODIwCWZpbGU6S2Vlbi5hcHAudGFyLmd6CjZwdDY2aEQ2cCtXR1JGUFpqRzNISlpqZmJtUnR2dnA1K1FNUEZlSTgyU3prbUsrcmlnQkVBTEJLU3NoR29ZSVh0UHNwWUx2ZFN0T1RxNHQ5b3BNVUJ3PT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.12.1/Keen_0.12.1_x64.app.tar.gz"
     }
   }
 }
