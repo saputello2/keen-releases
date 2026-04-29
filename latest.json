@@ -1,15 +1,15 @@
 {
-  "version": "0.11.0",
-  "notes": "OAuth proxy + UX improvements",
-  "pub_date": "2026-04-27T12:49:22.000Z",
+  "version": "0.12.0",
+  "notes": "# Keen 0.12.0 — Chat & Markdown Attachments\n\nAttach files to chats and reference them inline in your markdown. Bytes are stored locally (or on your managed Fly tenant) and travel with bundle export/import.\n\n## What's new\n\n- **Attach files in chat:** drag & drop, paste, or press **⌘U** to upload. The composer now spans the full width and works keyboard-first.\n- **Inline attachments in markdown:** images and documents render with previews and download links wherever they're embedded.\n- **Bundle export/import preserves attachments:** raw bytes ship with the rest of your knowledge, so backups and migrations stay lossless.\n- **New commands & shortcuts:** `chat.sendMessage` (↩) and `chat.uploadFile` (⌘U) are first-class commands — discoverable in the Action Panel and remappable like any other shortcut.\n\n## Managed hosting\n\n- Tenant Fly machines now configure `ATTACHMENTS_DIR=/data/attachments` automatically on provisioning. Existing machines are unaffected unless updated.\n- Backend image bumped to `0.12.0` — required for attachment GraphQL operations.\n\n## Fixes\n\n- Streaming hash + byte-count is now race-free across attachment storage adapters.\n- SHA-256 helper handles jsdom realm-mismatch in test environments.",
+  "pub_date": "2026-04-29T16:39:27.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVNzRVNTN1o0VzhMbnVha3oyaW8xc3FYSE9lVGRMVUJTd0h3dS9qNzF2UkFHUEE0Y2NzNkR5Qk1XeTUza212TnJaWVFWTnVNWlZ1TWZGUVJCdzJMV1FZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3MjkyNjE5CWZpbGU6S2Vlbi5hcHAudGFyLmd6CmliYTNEdEs2OXBoNzVScW8rNHE5SE4zV21SMkkwREMzNUZEMy84aHBTWFpZYWFpQmFaY3Y5YVhKellYUGJNSXdaZUxUVVMwejNRVW1ObHJKMkJjMkNnPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.11.0/Keen_0.11.0_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVZCWXNXZStFeW4yZ1dReEg4emw3NjlRUFlJeUZCVEF3RlVIZWlzaWxnTDFwKzBacFVaQ1diN2dqUzJYV29JR3VnbG0xRFY0b2RkUUFocVY1V29Mbmc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3NDgwNTUxCWZpbGU6S2Vlbi5hcHAudGFyLmd6CngxK293K2V2eGFJVnlFalRJaXArME5JL1U0Z0VUYWdMblN0OW80RkpPZzFmaTFJNU5rVDVnKzg2SWtibnN3dHRYM1VGVUUwd2RubTNxR0s2dGlwTUJnPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.12.0/Keen_0.12.0_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWQrQ1hwZXlIY05KQUIrUlQ3ZnJTT1RSQ2lqa3ZJelRhazc3eVRDdThCSTRzSXo5cmhhVFlhRWFMK3E1SkhTK2w4WXc1Y01jamhBVHorNWtYUHVIdEF3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3MjkyMzk0CWZpbGU6S2Vlbi5hcHAudGFyLmd6Cm0wbDV0K3hjbjl5Z1NCMHdDMlRMbW9maUNOVUMrTnI1bFZiaEJ2QnJYZlhyTjJ4VTdXMEtUVTgzVlhpSEpGRU9vekRzeWhlaXZHNTZtNUEyaFJnaEN3PT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.11.0/Keen_0.11.0_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWN1N2VsSmZqby9YL2hRVFE1VTF1elpzNG4xM1FwQ1BEM3VPaHhTMzRUMGZiSHdUT1orZTk3QzBxYjRqM2xsZEkya011S0NXLzdEeTc2RWRQemswY2dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc3NDgwMzM2CWZpbGU6S2Vlbi5hcHAudGFyLmd6CnpESkZRK3FMYldhMzB6RGxoNGp0Z05oQ1dFdTY1Vkx4dCsxTmhaUVV4NVA1dnZ5elRoNXdGOHErdWRKNUhWMmhaR3pTMVdPaXFBZklqa0FjNXYvbURRPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.12.0/Keen_0.12.0_x64.app.tar.gz"
     }
   }
 }
