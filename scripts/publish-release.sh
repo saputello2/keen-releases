@@ -14,15 +14,18 @@
 #   Step C — Publish client update manifest (latest.json)
 #     publish-release.sh --publish-manifest <version>
 #
-# The multi-step flow enforces: push the image BEFORE publishing the client
-# manifest, so clients never see an update pointing at an image that
-# managed hosting can't yet provision. Step B keeps managed hosting able
-# to roll new versions onto user machines.
+# The intended multi-step flow is: push the image BEFORE publishing the
+# client manifest, so clients never see an update pointing at an image
+# that managed hosting can't yet provision. Step B keeps managed hosting
+# able to roll new versions onto user machines. (The script does not
+# currently *enforce* this ordering — `--publish-manifest` will run
+# regardless of whether the image is in the registry — so treat the
+# sequence as a recommended runbook, not a guard.)
 #
 # (The previous Step B "Deploy backend to Fly.io (keen-dev-trial)" path
 # was retired along with the keen-dev-trial Fly app. Managed-hosting
-# machines are provisioned via the Worker's Machines API call directly,
-# not via `fly deploy` against a fly.toml.)
+# machines are provisioned by `keen-provisioning` via Fly's Machines
+# API directly, not via `fly deploy` against a fly.toml.)
 #
 # Expects the renamed updater artifacts produced by
 # keen-frontend/scripts/rename-updater-artifacts.sh:

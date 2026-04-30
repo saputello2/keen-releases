@@ -52,7 +52,7 @@ Only macOS is supported currently (darwin-aarch64, darwin-x86_64).
 
 ## Release Pipeline (`scripts/publish-release.sh`)
 
-Four modes, run in sequence for a full release:
+Three modes, run in sequence for a full release:
 
 | Step | Command | What it does |
 |---|---|---|
