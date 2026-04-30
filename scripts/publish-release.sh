@@ -8,19 +8,24 @@
 #     publish-release.sh <version> [release-notes] \
 #       [--arm64-bundle <dir>] [--x64-bundle <dir>]
 #
-#   Step B — Deploy backend to Fly.io (dev/personal instance)
-#     publish-release.sh --deploy-fly <version> <app-name>
-#
-#   Step B2 — Push image to Fly registry (for managed hosting provisioning)
+#   Step B — Push image to Fly registry (for managed hosting provisioning)
 #     publish-release.sh --push-fly-registry <version>
 #
 #   Step C — Publish client update manifest (latest.json)
 #     publish-release.sh --publish-manifest <version>
 #
-# The multi-step flow enforces: deploy backend BEFORE publishing the client
-# manifest, so clients never see an update pointing at a not-yet-deployed
-# backend. Step B2 ensures managed hosting can provision new servers with
-# the same image version.
+# The intended multi-step flow is: push the image BEFORE publishing the
+# client manifest, so clients never see an update pointing at an image
+# that managed hosting can't yet provision. Step B keeps managed hosting
+# able to roll new versions onto user machines. (The script does not
+# currently *enforce* this ordering — `--publish-manifest` will run
+# regardless of whether the image is in the registry — so treat the
+# sequence as a recommended runbook, not a guard.)
+#
+# (The previous Step B "Deploy backend to Fly.io (keen-dev-trial)" path
+# was retired along with the keen-dev-trial Fly app. Managed-hosting
+# machines are provisioned by `keen-provisioning` via Fly's Machines
+# API directly, not via `fly deploy` against a fly.toml.)
 #
 # Expects the renamed updater artifacts produced by
 # keen-frontend/scripts/rename-updater-artifacts.sh:
@@ -48,10 +53,7 @@ Usage:
     publish-release.sh <version> [release-notes] \
       [--arm64-bundle <dir>] [--x64-bundle <dir>]
 
-  Step B — Deploy backend to Fly.io:
-    publish-release.sh --deploy-fly <version> <app-name>
-
-  Step B2 — Push image to Fly registry (managed hosting):
+  Step B — Push image to Fly registry (managed hosting):
     publish-release.sh --push-fly-registry <version>
 
   Step C — Publish client manifest:
@@ -66,28 +68,6 @@ fi
 
 # ── Route to the correct step ──
 case "$1" in
-  --deploy-fly)
-    # ── Step B: Deploy backend to Fly.io ──
-    shift
-    if [[ $# -lt 2 ]]; then
-      echo "Usage: publish-release.sh --deploy-fly <version> <app-name>" >&2
-      exit 1
-    fi
-    VERSION="$1"
-    APP_NAME="$2"
-
-    echo "=== Step B: Deploy backend ${VERSION} to Fly.io (${APP_NAME}) ==="
-    echo ""
-
-    if [[ ! -x "$SCRIPT_DIR/deploy-fly.sh" ]]; then
-      echo "ERROR: deploy-fly.sh not found at $SCRIPT_DIR/deploy-fly.sh" >&2
-      exit 1
-    fi
-
-    "$SCRIPT_DIR/deploy-fly.sh" "$VERSION" "$APP_NAME"
-    exit $?
-    ;;
-
   --push-fly-registry)
     # ── Step B2: Push image to Fly registry for managed hosting ──
     shift
@@ -338,9 +318,8 @@ echo "  Release: https://github.com/${GH_REPO}/releases/tag/v${VERSION}"
 echo ""
 echo "Next steps:"
 echo "  1. Verify the release artifacts look correct"
-echo "  2. Deploy the backend to Fly.io:"
-echo "       ./publish-release.sh --deploy-fly ${VERSION} keen-dev-trial"
-echo "  3. Push the image to Fly registry (for managed hosting):"
+echo "  2. Push the image to Fly registry (for managed hosting):"
 echo "       ./publish-release.sh --push-fly-registry ${VERSION}"
-echo "  4. After verifying /version, publish the client manifest:"
+echo "  3. After verifying /version on a managed-hosting machine, publish"
+echo "     the client manifest:"
 echo "       ./publish-release.sh --publish-manifest ${VERSION}"
