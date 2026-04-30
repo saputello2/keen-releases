@@ -17,7 +17,6 @@ keen-releases/
 ├── latest.json                          # Tauri updater manifest (the core artifact)
 ├── scripts/
 │   ├── publish-release.sh               # Multi-step release pipeline orchestrator
-│   ├── deploy-fly.sh                    # Fly.io deploy with pre-deploy backup
 │   └── push-fly-registry.sh             # Re-tag GHCR → Fly private registry (legacy)
 ├── .github/workflows/
 │   └── validate-manifest.yml            # CI gate — validates latest.json on PR/push
@@ -58,9 +57,13 @@ Four modes, run in sequence for a full release:
 | Step | Command | What it does |
 |---|---|---|
 | **A** | `publish-release.sh <version> [notes]` | Creates GitHub Release with 6 artifacts (2 `.tar.gz`, 2 `.sig`, 2 `.dmg`). Auto-detects arm64 bundle path. |
-| **B** | `publish-release.sh --deploy-fly <version> <app>` | Fly.io rolling deploy with pre-deploy DB backup |
-| **B2** | `publish-release.sh --push-fly-registry <version>` | Re-tag GHCR → Fly registry (legacy, optional) |
+| **B** | `publish-release.sh --push-fly-registry <version>` | Re-tag GHCR → Fly registry (legacy, optional). Managed-hosting machines pull directly from GHCR; this is only for Fly registry-mirrored deployments. |
 | **C** | `publish-release.sh --publish-manifest <version>` | Downloads `.sig` files from GH Release, builds `latest.json` via `jq`, commits and pushes to `main` |
+
+> The previous Step B "`--deploy-fly`" path was retired along with the
+> `keen-dev-trial` Fly app. Managed-hosting machines are provisioned via
+> `keen-provisioning`'s Machines API call directly, not via `fly deploy`
+> against a `fly.toml`.
 
 **Artifact naming convention** (from `keen-frontend` Tauri build output):
 - `Keen_<VERSION>_aarch64.app.tar.gz` + `.sig` (updater payload + signature)
@@ -93,19 +96,12 @@ Runs on push to `main` and PRs when `latest.json` changes. Five checks:
   RWSJ4g+J4je8mdZOVjwK/6WQqZ3fIQB4JTBzTiZCPOq5kFOWliG2o2cH
   ```
 
-## Fly.io Deploy (`scripts/deploy-fly.sh`)
-
-Used for managed-hosting backend deploys (not the desktop app):
-
-1. Pre-deploy `pg_dump` backup on the Fly machine (retains last 5)
-2. Rolling deploy with tagged GHCR image (`flyctl deploy --strategy rolling`)
-3. Post-deploy version verification — polls `/version` endpoint, prints rollback instructions on failure
 
 ## Rollback Procedures
 
 - **Client rollback**: `git revert HEAD` on `latest.json`, push to `main`
-- **Fly.io image rollback**: `flyctl releases rollback`
-- **Database restore**: `pg_restore` from pre-deploy backup on Fly volume
+- **Managed-hosting image rollback**: `flyctl machine update <id> --image ghcr.io/saputello2/keen-backend:<prev-version> -a keen-<subdomain>` per affected machine (see `keen-frontend/docs/runbooks/managed-hosting-infrastructure-setup.md` → "Rolling out a backend-only patch")
+- **Database restore**: `pg_restore` from a backup on the per-user Fly volume
 
 ## Conventions
 
