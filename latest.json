@@ -1,15 +1,15 @@
 {
-  "version": "0.15.0",
-  "notes": "# Keen 0.15.0\nJoint release with keen-backend 0.15.0.\n## Highlights\n- **Tier 1 PR 5:** User-held managed-hosting recovery codes (Keychain, post-provision save gate).\n- **Editor:** Mermaid ELK routing, error containment, polarity-aware preview.\n- **Managed logs:** Client timezone on `createLogEntry` (desktop + backend).\n- **Backend:** `search_entities` tool, vector health probes, linked-entities / `search_knowledge` fixes.\nFull changelog: [keen-frontend](https://github.com/saputello2/keen-frontend/blob/v0.15.0/CHANGELOG.md#0150---2026-05-25) · [keen-backend](https://github.com/saputello2/keen-backend/blob/v0.15.0/CHANGELOG.md#0150---2026-05-25)",
-  "pub_date": "2026-05-26T00:14:17.000Z",
+  "version": "0.16.0",
+  "notes": "## Keen 0.16.0\n\nCapture-and-context release. Joint with keen-backend 0.16.0.\n\n**New**\n- **Quick Task v2** — the quick-capture window now has a detail-style header with full metadata staging: priority preview, reminder, due date, importance, effort, status, and recurrence, all staged before a single save (⌘↵).\n- **Progress Notes on Projects & Milestones** — dated progress notes are no longer Tasks-only. Add them on projects and milestones too, with rename-proof attribution back to the source entity.\n- **Document attachments in the markdown editor** — drop, paste, or attach PDF, Word, Excel, and text files directly in the editor (chat parity); they open in your default app on click.\n- **Recent Activity on Task detail** — a task's page now shows due-date / importance / effort edits in a Recent Activity feed.\n\n**Fixed**\n- Corrected the demo \"Complete Onboarding\" milestone, which was seeded with an invalid status and could break the onboarding project's linked entities (seen first on iOS / managed backends).",
+  "pub_date": "2026-06-02T03:41:54.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWRKWWNrS0lyeUdINjBOVnpFUjZ4eENRZDhJSmtTUlcwNVBRTlc1cnY2WnVPcDVqNENaQjBrRE4vdWhEY2RaRlJublJCTEp1MFBFQmFsLzFOYit6Y0FnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NzUzMzg3CWZpbGU6S2Vlbi5hcHAudGFyLmd6Cnprb2ZTMHhwSjJDblpEMjcyMWJ5MU1XVVVPK2VNckdFTVZGUzRCU1VRN014OHFoVitaSnFuZjN5RURBaTZ5dUNnK2FHYUplbzUwckdHaVM5NXpLR0NnPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.15.0/Keen_0.15.0_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVZKNzFDTmhidVdLTEJCZHVEN3RWRGNzT0gweXdPT0IzUFNMenpqaUxQdXBDMVpVRkxlWjc1WGNmT29pckhmUW8wWllaRWwrcHlzR0llZ3NFVjhMM0FvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMzcwNjAyCWZpbGU6S2Vlbi5hcHAudGFyLmd6CmhMcU81bENCcWZrclZpeis0YWpqWVo4WVp0ZUswUnA5aVB5Y1dSa1lURktnbFBjeFZKaHNyak9CZTR6dkdZUHlaNEFwLy9yUUt5MFEvRVlNUHlDZEJBPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.16.0/Keen_0.16.0_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWZZajl4WEh1OGd1Ynl2Y0tDZEZuVW1kUzNueXg5NEgxeVhtb3NZSWF6b1RjVUl6UGVVOGtHNHVNMHRmVmUweC9yM1ZGKy9yRHBEWi9ZdEdKbzBvYlFnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NzUzMDIzCWZpbGU6S2Vlbi5hcHAudGFyLmd6Cm1sZGNrQjJGeWRYV1Y0NEEvcDhuUjJ3VHAwMmlFOE5hSlRmaWh3V3hKR2RrYlNzVEFzcVpDZjBnTGVudmMzZktkOHNWOCtPaE9ZK3ZPcDdjc042TUJnPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.15.0/Keen_0.15.0_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVkxRFpoL1N5NS9VMFVtMzcxdjQxWVNGbVFncHRaTURsOGo4aWlkb1NwUGtpaWJyMExYQmt1UGlxTVluYXRERTNBRTlLY2kvYjF0Z0REcXoyR3lIaUFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMzcxMzQ2CWZpbGU6S2Vlbi5hcHAudGFyLmd6CmZGaWptc1ZHN2diN3VTQUU0ajVPWXRkSjhvUnlUWVY4U0t6WE1QNUdsK1gzUThBQ0s1RWhuZHlRZFdrejVqRkF2czlscmJGZmkrK05RR1FJVmdSbEFRPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.16.0/Keen_0.16.0_x64.app.tar.gz"
     }
   }
 }
