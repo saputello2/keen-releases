@@ -1,15 +1,15 @@
 {
-  "version": "0.16.0",
-  "notes": "## Keen 0.16.0\n\nCapture-and-context release. Joint with keen-backend 0.16.0.\n\n**New**\n- **Quick Task v2** — the quick-capture window now has a detail-style header with full metadata staging: priority preview, reminder, due date, importance, effort, status, and recurrence, all staged before a single save (⌘↵).\n- **Progress Notes on Projects & Milestones** — dated progress notes are no longer Tasks-only. Add them on projects and milestones too, with rename-proof attribution back to the source entity.\n- **Document attachments in the markdown editor** — drop, paste, or attach PDF, Word, Excel, and text files directly in the editor (chat parity); they open in your default app on click.\n- **Recent Activity on Task detail** — a task's page now shows due-date / importance / effort edits in a Recent Activity feed.\n\n**Fixed**\n- Corrected the demo \"Complete Onboarding\" milestone, which was seeded with an invalid status and could break the onboarding project's linked entities (seen first on iOS / managed backends).",
-  "pub_date": "2026-06-02T03:41:54.000Z",
+  "version": "0.16.1",
+  "notes": "## Keen 0.16.1\n\nMaintenance release (aligns the desktop app with keen-backend 0.16.1).\n\n**Fixed**\n- \"Transfer & Switch to Remote\" no longer crashes on Macs running older macOS (pre-Sonoma 14.4, e.g. Intel hardware capped at Ventura). The transfer used a newer Web API (`AbortSignal.any`) that isn't available in older system WebKit; it now falls back gracefully.",
+  "pub_date": "2026-06-04T18:40:23.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVZKNzFDTmhidVdLTEJCZHVEN3RWRGNzT0gweXdPT0IzUFNMenpqaUxQdXBDMVpVRkxlWjc1WGNmT29pckhmUW8wWllaRWwrcHlzR0llZ3NFVjhMM0FvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMzcwNjAyCWZpbGU6S2Vlbi5hcHAudGFyLmd6CmhMcU81bENCcWZrclZpeis0YWpqWVo4WVp0ZUswUnA5aVB5Y1dSa1lURktnbFBjeFZKaHNyak9CZTR6dkdZUHlaNEFwLy9yUUt5MFEvRVlNUHlDZEJBPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.16.0/Keen_0.16.0_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWVHWmRhb0NmeUV0MVJFR3FWWHJURy9FYUQyeHhIcjVhbzZycURrU1JJMlhEakYxSm5udCtMbllGaHJsQzh6OGxjOVlJOW43MjhKU1czTEkyblZSSEFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwNTk3NTI5CWZpbGU6S2Vlbi5hcHAudGFyLmd6CkdZTWpEMk9OTnpvaUtiNXo5Z2JoSWZVdWdlNEE5ZkhuU0VUSmFhQjBqNlRUNnRnekp2WFBVMU1RM24vQTlZeFVvUkxFZHA4T0VXU1JSSlJqVFgzWkRRPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.16.1/Keen_0.16.1_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVkxRFpoL1N5NS9VMFVtMzcxdjQxWVNGbVFncHRaTURsOGo4aWlkb1NwUGtpaWJyMExYQmt1UGlxTVluYXRERTNBRTlLY2kvYjF0Z0REcXoyR3lIaUFzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMzcxMzQ2CWZpbGU6S2Vlbi5hcHAudGFyLmd6CmZGaWptc1ZHN2diN3VTQUU0ajVPWXRkSjhvUnlUWVY4U0t6WE1QNUdsK1gzUThBQ0s1RWhuZHlRZFdrejVqRkF2czlscmJGZmkrK05RR1FJVmdSbEFRPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.16.0/Keen_0.16.0_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVRwUjhHSkJibGNzclFBNjZMSkdHTGxIb0JabXJFZkZ4SHlVY3VBQ3lDYzljanlEVHNSUjRNWnhCMzFrQkkzSTBvZUNKOUUrT1NBNDdJZUh4eDhhTHdjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwNTk3OTI4CWZpbGU6S2Vlbi5hcHAudGFyLmd6ClNxYjNqNXhDL3J0QmN2T1ZxTFRJWWRwSHJxajJocVNDeFZDdlJ6MDFBSTJuSkxOVGtmOFBaOEQydk5rZU9HT1RRMElOdVM2SDU5WWl5WThHSEx1QkNBPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.16.1/Keen_0.16.1_x64.app.tar.gz"
     }
   }
 }
