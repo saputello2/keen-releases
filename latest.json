@@ -1,15 +1,15 @@
 {
-  "version": "0.16.1",
-  "notes": "## Keen 0.16.1\n\nMaintenance release (aligns the desktop app with keen-backend 0.16.1).\n\n**Fixed**\n- \"Transfer & Switch to Remote\" no longer crashes on Macs running older macOS (pre-Sonoma 14.4, e.g. Intel hardware capped at Ventura). The transfer used a newer Web API (`AbortSignal.any`) that isn't available in older system WebKit; it now falls back gracefully.",
-  "pub_date": "2026-06-04T18:40:23.000Z",
+  "version": "0.17.0",
+  "notes": "Knowledge Notes section; file-path link + checklist/link-file slash commands; bulk Add Tag / Set Milestone / Link Knowledge; six new Summary Section filters; Add Progress Note & Create Task in the Action Panel; plus editor/scroll/file-link fixes.",
+  "pub_date": "2026-06-08T17:42:28.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWVHWmRhb0NmeUV0MVJFR3FWWHJURy9FYUQyeHhIcjVhbzZycURrU1JJMlhEakYxSm5udCtMbllGaHJsQzh6OGxjOVlJOW43MjhKU1czTEkyblZSSEFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwNTk3NTI5CWZpbGU6S2Vlbi5hcHAudGFyLmd6CkdZTWpEMk9OTnpvaUtiNXo5Z2JoSWZVdWdlNEE5ZkhuU0VUSmFhQjBqNlRUNnRnekp2WFBVMU1RM24vQTlZeFVvUkxFZHA4T0VXU1JSSlJqVFgzWkRRPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.16.1/Keen_0.16.1_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVlKZWYybGZOQ1ZDUTc0cldNL3hDeTBWb1dhTW5yUUxJKzk1MGtQbHcxc1JtMzRjMW55SVVFbDBkVWV5OFA2L0lzT3piWFNBUlBWbnpBbUNING9KY3dNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwOTQwMTczCWZpbGU6S2Vlbi5hcHAudGFyLmd6Ci9EQlpWRkZUaTRGa1NocjVrSldpamZpRFFsaEhjSExXR3ZwNWcxc1AzY1RKdXRMNTUyZjlnTm4xZ3RpNG5pV2lSeXdPOE1ERU9pSGgvSUp6aXM0ZERBPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.17.0/Keen_0.17.0_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVRwUjhHSkJibGNzclFBNjZMSkdHTGxIb0JabXJFZkZ4SHlVY3VBQ3lDYzljanlEVHNSUjRNWnhCMzFrQkkzSTBvZUNKOUUrT1NBNDdJZUh4eDhhTHdjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwNTk3OTI4CWZpbGU6S2Vlbi5hcHAudGFyLmd6ClNxYjNqNXhDL3J0QmN2T1ZxTFRJWWRwSHJxajJocVNDeFZDdlJ6MDFBSTJuSkxOVGtmOFBaOEQydk5rZU9HT1RRMElOdVM2SDU5WWl5WThHSEx1QkNBPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.16.1/Keen_0.16.1_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVYxYTArdytaNkdRWTkwTVNUOXIwS2lpM3hMdHBHSHNqYjZuQk1JcHdYS3F4UFJvRkRnUzFPSHBjNm5OMi8vaVdHMm5PVEc2OFdKY0JVRlVvRlRKOVFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwOTQwNDM0CWZpbGU6S2Vlbi5hcHAudGFyLmd6CkU5NEhnTXUzVDNkaDZYNWdjRGdoKzB5c0R4OEZFNmdjSUk1NTg4RVEzdGdoZWIvUlFWdmdsWHJ3SXlHdnYyYzM1VUhuRkRUZXZRd0ltcS9DL1d2ckR3PT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.17.0/Keen_0.17.0_x64.app.tar.gz"
     }
   }
 }
