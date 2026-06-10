@@ -1,15 +1,15 @@
 {
-  "version": "0.17.0",
-  "notes": "Knowledge Notes section; file-path link + checklist/link-file slash commands; bulk Add Tag / Set Milestone / Link Knowledge; six new Summary Section filters; Add Progress Note & Create Task in the Action Panel; plus editor/scroll/file-link fixes.",
-  "pub_date": "2026-06-08T17:42:28.000Z",
+  "version": "0.18.0",
+  "notes": "## Keen 0.18.0\n\nJoint desktop + managed-backend release.\n\n### New\n- **Summary section dividers** — group a Summary section's tasks under clickable **Project** and/or **Milestone** headers. Configure per section in Settings → Summary Sections via the new \"Dividers\" control.\n- **Quick Navigation Bar** — hover the floating action button to fan out one-click shortcuts to Tasks, Knowledge, Projects, Summary, and Chat. Toggle in Settings → General.\n\n### Changed\n- **Deleting a project** with linked milestones and tasks is no longer blocked. You now get an informed confirmation that cascade-deletes the project's milestones and lets you choose whether to also delete its tasks or keep them (unlinked from the project).\n\n### Fixed & polished\n- Task/milestone status, importance, and effort icons now update instantly when changed from a detail page.\n- Smoother, more reliable list reordering under rapid keyboard/drag input.\n- A sweep of stability and test-reliability fixes.\n\n### Security\n- Tauri runtime upgraded 2.10 → 2.11 (closes an IPC origin-confusion advisory), plus a batch of dependency security updates.",
+  "pub_date": "2026-06-10T05:02:47.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVlKZWYybGZOQ1ZDUTc0cldNL3hDeTBWb1dhTW5yUUxJKzk1MGtQbHcxc1JtMzRjMW55SVVFbDBkVWV5OFA2L0lzT3piWFNBUlBWbnpBbUNING9KY3dNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwOTQwMTczCWZpbGU6S2Vlbi5hcHAudGFyLmd6Ci9EQlpWRkZUaTRGa1NocjVrSldpamZpRFFsaEhjSExXR3ZwNWcxc1AzY1RKdXRMNTUyZjlnTm4xZ3RpNG5pV2lSeXdPOE1ERU9pSGgvSUp6aXM0ZERBPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.17.0/Keen_0.17.0_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVNzd0c5NTd1dmI4MVhhWUdMYytSa01seVBCb3BjTGtZamRHczZtZVdRL0VPRDk4cm1KRkNycG5hZzByZm9VdS96R1Q0aFJnU3ExRlRRRE9NeDgvL1FVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgxMDY2MzMzCWZpbGU6S2Vlbi5hcHAudGFyLmd6CjRyaFpsTUJ0eUR1Uy9Rc3UrOEpoakQwN3JnTkJkZHF6UGwyMkNDa3MzQjduMWMrQXl0R2lWRFBKMFcya2Z6S1JyNDRVOW16emNXekI1dlhuU0tneEFBPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.18.0/Keen_0.18.0_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVYxYTArdytaNkdRWTkwTVNUOXIwS2lpM3hMdHBHSHNqYjZuQk1JcHdYS3F4UFJvRkRnUzFPSHBjNm5OMi8vaVdHMm5PVEc2OFdKY0JVRlVvRlRKOVFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwOTQwNDM0CWZpbGU6S2Vlbi5hcHAudGFyLmd6CkU5NEhnTXUzVDNkaDZYNWdjRGdoKzB5c0R4OEZFNmdjSUk1NTg4RVEzdGdoZWIvUlFWdmdsWHJ3SXlHdnYyYzM1VUhuRkRUZXZRd0ltcS9DL1d2ckR3PT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.17.0/Keen_0.17.0_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVIzR3BBRVhmbmpGRDZlMldtRmtZRXJCQW9YWEZtNFFiZ0hxbURMV25oU3VhY25WQVR0TCtnV0NzcHUwTmUrVlpGanhpNUpWSlk0bGtUQXQrREdZd3dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgxMDY2NjQ2CWZpbGU6S2Vlbi5hcHAudGFyLmd6CmNKa2x0QXNEOVFaSjJtQ3Zya3g4U0FxcHhNWnc1Q3ZlWUtQQVNBNzVwN1dMTjZyWkQvbDdSK09iUTlwbE5LbjZPQXB1dk1BU1VvSldtdXR2d1BKTUR3PT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.18.0/Keen_0.18.0_x64.app.tar.gz"
     }
   }
 }
