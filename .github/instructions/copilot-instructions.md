@@ -57,9 +57,6 @@ Three modes, run in sequence for a full release:
 | Step | Command | What it does |
 |---|---|---|
 | **A** | `publish-release.sh <version> [notes]` | Creates GitHub Release with 6 artifacts (2 `.tar.gz`, 2 `.sig`, 2 `.dmg`). Auto-detects arm64 bundle path. |
-| Step | Command | What it does |
-|---|---|---|
-| **A** | `publish-release.sh <version> [notes]` | Creates GitHub Release with 6 artifacts (2 `.tar.gz`, 2 `.sig`, 2 `.dmg`). Auto-detects arm64 bundle path. |
 | **B** | `publish-release.sh --publish-manifest <version>` | Downloads `.sig` files from GH Release, builds `latest.json` via `jq`, commits and pushes to `main` |
 | **(legacy)** | `publish-release.sh --push-fly-registry <version>` | **Retired** — errors unless `KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH=1`. Legacy docker mirror; not used by managed hosting. |
 
