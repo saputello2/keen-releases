@@ -4,28 +4,22 @@
 # ============================================================================
 # Multi-step release pipeline for Keen. Each step is a separate invocation:
 #
-#   Step A — Create GitHub Release (client artifacts only)
+#   Step A — Create GitHub Release (desktop client artifacts only)
 #     publish-release.sh <version> [release-notes] \
 #       [--arm64-bundle <dir>] [--x64-bundle <dir>]
 #
-#   Step B — Push image to Fly registry (for managed hosting provisioning)
-#     publish-release.sh --push-fly-registry <version>
-#
-#   Step C — Publish client update manifest (latest.json)
+#   Step B — Publish client update manifest (latest.json)
 #     publish-release.sh --publish-manifest <version>
 #
-# The intended multi-step flow is: push the image BEFORE publishing the
-# client manifest, so clients never see an update pointing at an image
-# that managed hosting can't yet provision. Step B keeps managed hosting
-# able to roll new versions onto user machines. (The script does not
-# currently *enforce* this ordering — `--publish-manifest` will run
-# regardless of whether the image is in the registry — so treat the
-# sequence as a recommended runbook, not a guard.)
+# Managed hosting (Fly Machines) is a SEPARATE pipeline — NOT this script.
+# After keen-backend tag vX.Y.Z, CI publishes to GHCR; then follow
+# keen/.cursor/skills/managed-backend-release/SKILL.md:
+#   sign-and-publish-manifest → KEEN_IMAGE_TAG bump → flyctl machine update
+# Machines pull ghcr.io/saputello2/keen-backend:<tag> directly.
 #
-# (The previous Step B "Deploy backend to Fly.io (keen-dev-trial)" path
-# was retired along with the keen-dev-trial Fly app. Managed-hosting
-# machines are provisioned by `keen-provisioning` via Fly's Machines
-# API directly, not via `fly deploy` against a fly.toml.)
+#   --push-fly-registry  RETIRED (legacy GHCR→registry.fly.io docker mirror).
+#   Do not use for managed hosting. Set KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH=1
+#   only if you still have a deployment that reads registry.fly.io/keen-backend-images.
 #
 # Expects the renamed updater artifacts produced by
 # keen-frontend/scripts/rename-updater-artifacts.sh:
@@ -46,18 +40,33 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 GH_REPO="saputello2/keen-releases"
 
+print_managed_hosting_steps() {
+  local version="$1"
+  cat <<EOF
+
+Managed hosting (Fly Machines) — separate from this script:
+  1. keen-backend tag v${version} → wait for "Publish Docker Images" CI (GHCR)
+  2. cd ~/Developer/keen/keen-provisioning && pnpm sign-and-publish-manifest ${version}
+  3. Bump KEEN_IMAGE_TAG in wrangler.toml → wrangler deploy
+  4. flyctl machine update <id> --image ghcr.io/saputello2/keen-backend:${version} -a <app> --yes
+
+  Full runbook: keen/.cursor/skills/managed-backend-release/SKILL.md
+EOF
+}
+
 usage() {
   cat >&2 <<'USAGE'
 Usage:
-  Step A — Create GitHub Release:
+  Step A — Create GitHub Release (desktop):
     publish-release.sh <version> [release-notes] \
       [--arm64-bundle <dir>] [--x64-bundle <dir>]
 
-  Step B — Push image to Fly registry (managed hosting):
-    publish-release.sh --push-fly-registry <version>
-
-  Step C — Publish client manifest:
+  Step B — Publish client manifest (latest.json):
     publish-release.sh --publish-manifest <version>
+
+  Managed hosting: see managed-backend-release skill (NOT --push-fly-registry).
+
+  Legacy (retired): --push-fly-registry requires KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH=1
 USAGE
   exit 1
 }
@@ -69,7 +78,7 @@ fi
 # ── Route to the correct step ──
 case "$1" in
   --push-fly-registry)
-    # ── Step B2: Push image to Fly registry for managed hosting ──
+    # ── RETIRED: legacy docker mirror to registry.fly.io (not managed hosting) ──
     shift
     if [[ $# -lt 1 ]]; then
       echo "Usage: publish-release.sh --push-fly-registry <version>" >&2
@@ -77,7 +86,17 @@ case "$1" in
     fi
     VERSION="$1"
 
-    echo "=== Step B2: Push keen-backend ${VERSION} to Fly registry ==="
+    echo "ERROR: --push-fly-registry is retired for managed hosting." >&2
+    echo "  Managed Fly machines pull ghcr.io/saputello2/keen-backend:${VERSION} directly." >&2
+    print_managed_hosting_steps "$VERSION" >&2
+    echo "" >&2
+    if [[ "${KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH:-}" != "1" ]]; then
+      echo "To run the legacy registry.fly.io docker mirror anyway:" >&2
+      echo "  KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH=1 $0 --push-fly-registry ${VERSION}" >&2
+      exit 1
+    fi
+
+    echo "=== LEGACY: Push keen-backend ${VERSION} to Fly registry (docker mirror) ==="
     echo ""
 
     if [[ ! -x "$SCRIPT_DIR/push-fly-registry.sh" ]]; then
@@ -316,10 +335,8 @@ echo ""
 echo "=== GitHub Release created ==="
 echo "  Release: https://github.com/${GH_REPO}/releases/tag/v${VERSION}"
 echo ""
-echo "Next steps:"
+echo "Next steps (desktop):"
 echo "  1. Verify the release artifacts look correct"
-echo "  2. Push the image to Fly registry (for managed hosting):"
-echo "       ./publish-release.sh --push-fly-registry ${VERSION}"
-echo "  3. After verifying /version on a managed-hosting machine, publish"
-echo "     the client manifest:"
+echo "  2. Publish the client manifest:"
 echo "       ./publish-release.sh --publish-manifest ${VERSION}"
+print_managed_hosting_steps "${VERSION}"

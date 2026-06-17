@@ -2,9 +2,10 @@
 # ============================================================================
 # push-fly-registry.sh
 # ============================================================================
-# Re-tags a keen-backend image from GHCR and pushes it to Fly's private
-# registry so the provisioning service can reference it when creating
-# per-user Machines.
+# LEGACY — Re-tags a keen-backend image from GHCR and pushes it to Fly's
+# private registry (registry.fly.io/keen-backend-images). Managed hosting
+# does NOT use this: keen-provisioning pulls ghcr.io/saputello2/keen-backend
+# directly. See keen/.cursor/skills/managed-backend-release/SKILL.md.
 #
 # Usage:
 #   ./push-fly-registry.sh <version>

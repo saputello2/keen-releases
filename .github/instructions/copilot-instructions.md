@@ -57,13 +57,14 @@ Three modes, run in sequence for a full release:
 | Step | Command | What it does |
 |---|---|---|
 | **A** | `publish-release.sh <version> [notes]` | Creates GitHub Release with 6 artifacts (2 `.tar.gz`, 2 `.sig`, 2 `.dmg`). Auto-detects arm64 bundle path. |
-| **B** | `publish-release.sh --push-fly-registry <version>` | Re-tag GHCR → Fly registry (legacy, optional). Managed-hosting machines pull directly from GHCR; this is only for Fly registry-mirrored deployments. |
-| **C** | `publish-release.sh --publish-manifest <version>` | Downloads `.sig` files from GH Release, builds `latest.json` via `jq`, commits and pushes to `main` |
+| Step | Command | What it does |
+|---|---|---|
+| **A** | `publish-release.sh <version> [notes]` | Creates GitHub Release with 6 artifacts (2 `.tar.gz`, 2 `.sig`, 2 `.dmg`). Auto-detects arm64 bundle path. |
+| **B** | `publish-release.sh --publish-manifest <version>` | Downloads `.sig` files from GH Release, builds `latest.json` via `jq`, commits and pushes to `main` |
+| **(legacy)** | `publish-release.sh --push-fly-registry <version>` | **Retired** — errors unless `KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH=1`. Legacy docker mirror; not used by managed hosting. |
 
-> The previous Step B "`--deploy-fly`" path was retired along with the
-> `keen-dev-trial` Fly app. Managed-hosting machines are provisioned via
-> `keen-provisioning`'s Machines API call directly, not via `fly deploy`
-> against a `fly.toml`.
+**Managed hosting (Fly Machines)** — separate pipeline; see `managed-backend-release` skill:
+GHCR (CI) → `sign-and-publish-manifest` → `KEEN_IMAGE_TAG` → `flyctl machine update`.
 
 **Artifact naming convention** (from `keen-frontend` Tauri build output):
 - `Keen_<VERSION>_aarch64.app.tar.gz` + `.sig` (updater payload + signature)

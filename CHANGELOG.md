@@ -22,3 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 > users" → GitHub Release notes only.
 
 ## [Unreleased]
+
+### Changed
+
+- **`publish-release.sh` — retire misleading `--push-fly-registry` as the managed-hosting path.** Step B is now `--publish-manifest` (desktop `latest.json` only). `--push-fly-registry` errors by default with pointers to `managed-backend-release` (GHCR → `sign-and-publish-manifest` → `KEEN_IMAGE_TAG` → `flyctl machine update`); the legacy `push-fly-registry.sh` docker mirror requires `KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH=1`. Post–Step A "Next steps" no longer sends operators at a local Docker daemon for Fly releases.
