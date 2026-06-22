@@ -84,6 +84,20 @@ Each release on GitHub contains, per architecture:
 The DMGs are independent installers — they are **not** consumed by the updater
 and do not have a `.sig` file (Apple Developer ID signing covers them).
 
+### Native-addon releases (build pipeline only)
+
+Intel Mac desktop builds cross-compile `@lancedb/lancedb`'s darwin-x64 native
+addon from source when no prebuilt is available — a ~45–60 minute step on CI.
+To avoid that, maintainers can upload a locally-built `.node` once per
+`@lancedb/lancedb` version:
+
+| Release tag | Asset | Consumer |
+|---|---|---|
+| `native-addons-v0.24.1` | `lancedb.darwin-x64.node` | `keen-frontend` `release.yml` x86_64 leg |
+
+These releases are **not** listed in `latest.json` and are not downloaded by
+the app updater. See `keen-frontend/docs/build/dual-architecture-builds.md`.
+
 ## Verifying a release manually
 
 Every release artifact in this repository is signed with the same Tauri/minisign
