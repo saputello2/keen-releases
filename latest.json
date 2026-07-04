@@ -1,15 +1,15 @@
 {
-  "version": "0.20.1",
-  "notes": "**Client-requested quick fix — restore the Summary workspace label with a Home icon.**\n\nReverses the 0.20.0 \"Home\" nav rename while keeping the house glyph users expect for their landing page. Desktop-only; keen-backend stays at 0.20.0 (no API or bundled-server changes).",
-  "pub_date": "2026-06-26T17:52:13.000Z",
+  "version": "0.21.0",
+  "notes": "Draft release built by keen-frontend release workflow. Operator: review artifacts, then run Step B (`publish-release.sh --push-fly-registry 0.21.0`), promote this draft to public, then run Step C (`publish-release.sh --publish-manifest 0.21.0`).",
+  "pub_date": "2026-07-04T14:23:50.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWNiZnVxUG40ekJxckVINzVHc0dpUWxNdGdCVzlheXR3V3plSkVRQVBwdGFzc3psckYzaVlQc1FtcmlRcTFtVW9PT0Z2dEMydmlCQXhmR0NqMnhPclFFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyNDk2MjM2CWZpbGU6S2Vlbi5hcHAudGFyLmd6Ci9xYlpHekIyMTB5Z09JUzRGQW1Qb2JkZjYxdkJJNUk1cXFMM0lJaURMNDZ1M241OXUvYTVJZXNnRVNyNjhJQUNvVjRIS3ZXQkZsUURVNi8wSzVQZ0FnPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.20.1/Keen_0.20.1_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVVKUFJIT1FtcVdweXNYWGJwaFd2S1NnSGthQ2hQbTh6VHA1Z1JHb0dVUUFGbXhNZXk3QWZzakN4Mzk0cGNMZnJLcjUzSCtrbE5BZldTanpBYlRtMkE4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzMTcyOTAyCWZpbGU6S2Vlbi5hcHAudGFyLmd6CmNXOTFvaWZGRnU5OEdXVWVSMW1QeitFSG5Odm9jN1duOHZ2c2Z6dGlaTG0vRTBBS2xBeUtyMWZCSEg0dkhYMDk0VHp5MHBZbEpkeUJtN3hlU0d1SkFRPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.21.0/Keen_0.21.0_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVRBanRXYjJraGVNMkZkc3k3WE9TOXM4YUFGYkR2MGo5emIwMzVNQWJpTlludkpBMk9OMThvUWFJZ0hySWw1WjdUbVUxQnluQlVxaTdKenE4U0J1dHdVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgyNDk2MjI2CWZpbGU6S2Vlbi5hcHAudGFyLmd6CmYrcE5veVl5YlZtbEhGMkJ0VmZDVFRPdUZLSERoRGc1YUhSNk11QlZTMW4vbEs3ekhGZXd3Vy9BR0Vma3ozclhtNC9mVWdpd3RpeUJ3dStOVnB4R0FBPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.20.1/Keen_0.20.1_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWNiaXhkYkVxNElxM3MxQ1ptZ1RMZU9KSERYZ2M2MVU3bS94SWNyME5rZkpnT1NlQWpSckJvZnhJNklnY0IxaC9PelpqYVhzVTVabXp3Mnpmb1lMZHdrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzMTcyOTMzCWZpbGU6S2Vlbi5hcHAudGFyLmd6CnNMY3FhV0ZmM2R6VjN5SlNFbjV5dytBNUorT3oybGFWeEZaQTNKRE5neHBMd2F2cm1rRkZuK0JhZVowQ09RUjFUbFRTSXVMU2h2L0E4UnpjWHg4OEFBPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.21.0/Keen_0.21.0_x64.app.tar.gz"
     }
   }
 }
