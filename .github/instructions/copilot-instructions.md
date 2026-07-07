@@ -61,7 +61,7 @@ Three modes, run in sequence for a full release:
 | **(legacy)** | `publish-release.sh --push-fly-registry <version>` | **Retired** — errors unless `KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH=1`. Legacy docker mirror; not used by managed hosting. |
 
 **Managed hosting (Fly Machines)** — separate pipeline; see `managed-backend-release` skill:
-GHCR (CI) → `sign-and-publish-manifest` → `KEEN_IMAGE_TAG` → `flyctl machine update`.
+GHCR (CI) → `sign-and-publish-manifest --bump-and-deploy` → optional `flyctl machine update`.
 
 **Artifact naming convention** (from `keen-frontend` Tauri build output):
 - `Keen_<VERSION>_aarch64.app.tar.gz` + `.sig` (updater payload + signature)

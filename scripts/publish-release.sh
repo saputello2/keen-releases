@@ -44,14 +44,52 @@ print_managed_hosting_steps() {
   local version="$1"
   cat <<EOF
 
-Managed hosting (Fly Machines) — separate from this script:
-  1. keen-backend tag v${version} → wait for "Publish Docker Images" CI (GHCR)
-  2. cd ~/Developer/keen/keen-provisioning && pnpm sign-and-publish-manifest ${version}
-  3. Bump KEEN_IMAGE_TAG in wrangler.toml → wrangler deploy
-  4. flyctl machine update <id> --image ghcr.io/saputello2/keen-backend:${version} -a <app> --yes
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ REQUIRED — keen-provisioning (managed hosting) — release is NOT done without this
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  Full runbook: keen/.cursor/skills/managed-backend-release/SKILL.md
+Desktop latest.json (above) and the provisioning image allow-list are DIFFERENT
+manifests. Signing the allow-list alone does NOT advance client-triggered rolls.
+
+  1. keen-backend tag v${version} → wait for "Publish Docker Images" CI (GHCR)
+  2. cd ~/Developer/keen/keen-provisioning
+       pnpm sign-and-publish-manifest ${version} --bump-and-deploy
+     (or sign alone, then: pnpm bump-provisioning-tag ${version})
+  3. Add keen-provisioning CHANGELOG [Unreleased] entry for the KEEN_IMAGE_TAG bump
+  4. Optional: flyctl machine update <id> --image ghcr.io/saputello2/keen-backend:${version} -a <app> --yes
+
+  Full runbook: keen/.cursor/skills/tauri-release/SKILL.md (Steps 6–7)
+                keen/.cursor/skills/managed-backend-release/SKILL.md
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EOF
+}
+
+# ── Release-notes placeholder guard ──
+#
+# The `notes` field in latest.json is rendered verbatim to every updating client
+# in the in-app updater dialog. The CI publish-draft job (keen-frontend
+# .github/workflows/release.yml) seeds each draft GitHub Release with a
+# placeholder body; if that text — or an empty body, or the trivial
+# "Release vX.Y.Z" default — flows through --publish-manifest unedited, users see
+# a placeholder instead of a changelog (the 0.21.0 / 0.22.1 leak, where the
+# operator instructions themselves shipped as the release note). Returns 0
+# (match) when the notes are a placeholder that must NOT be shipped to users.
+notes_are_placeholder() {
+  local notes="$1"
+  local version="$2"
+  local trimmed
+  trimmed="$(printf '%s' "$notes" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+
+  [[ -z "$trimmed" ]] && return 0
+  [[ "$trimmed" == "Release v${version}" ]] && return 0
+
+  case "$notes" in
+    *"keen:release-notes-placeholder"*) return 0 ;;                        # current CI marker
+    *"Draft release built by keen-frontend release workflow"*) return 0 ;; # legacy CI text
+    *"Operator: review artifacts"*) return 0 ;;                            # legacy CI text
+  esac
+
+  return 1
 }
 
 usage() {
@@ -112,10 +150,25 @@ case "$1" in
     # ── Step C: Publish latest.json ──
     shift
     if [[ $# -lt 1 ]]; then
-      echo "Usage: publish-release.sh --publish-manifest <version>" >&2
+      echo "Usage: publish-release.sh --publish-manifest <version> [--notes-file <path> | --notes <string>]" >&2
       exit 1
     fi
     VERSION="$1"
+    shift
+
+    # Optional user-facing-notes overrides. Full precedence (resolved below):
+    # --notes > --notes-file > .release-notes-<version>.md > GitHub Release body.
+    # Whichever wins is still validated by the placeholder guard before it can
+    # reach latest.json.
+    NOTES_OVERRIDE=""
+    NOTES_FILE=""
+    while [[ $# -gt 0 ]]; do
+      case "$1" in
+        --notes)      NOTES_OVERRIDE="${2:?--notes requires a string}"; shift 2 ;;
+        --notes-file) NOTES_FILE="${2:?--notes-file requires a path}"; shift 2 ;;
+        *) echo "ERROR: Unknown flag for --publish-manifest: $1" >&2; exit 1 ;;
+      esac
+    done
 
     echo "=== Step C: Publish client manifest for ${VERSION} ==="
     echo ""
@@ -155,10 +208,43 @@ case "$1" in
     ARM64_URL="${RELEASE_BASE}/Keen_${VERSION}_aarch64.app.tar.gz"
     X64_URL="${RELEASE_BASE}/Keen_${VERSION}_x64.app.tar.gz"
 
-    # Fetch release notes from the GH release
-    NOTES=$(gh release view "v${VERSION}" --repo "$GH_REPO" --json body -q .body 2>/dev/null || echo "Release v${VERSION}")
-    if [[ -z "$NOTES" ]]; then
-      NOTES="Release v${VERSION}"
+    # Resolve the user-facing notes that will land in latest.json's "notes"
+    # field — the exact text every updating client renders in the in-app updater
+    # dialog. Precedence: --notes > --notes-file > the GitHub Release body.
+    if [[ -n "$NOTES_OVERRIDE" ]]; then
+      NOTES="$NOTES_OVERRIDE"
+    elif [[ -n "$NOTES_FILE" ]]; then
+      if [[ ! -f "$NOTES_FILE" ]]; then
+        echo "ERROR: --notes-file not found: $NOTES_FILE" >&2
+        exit 1
+      fi
+      NOTES="$(cat "$NOTES_FILE")"
+    elif [[ -f "${REPO_DIR}/.release-notes-${VERSION}.md" ]]; then
+      # Authored-notes convention: the operator drops user-facing notes in
+      # keen-releases/.release-notes-<version>.md; consuming it automatically is
+      # what makes real notes flow into latest.json with zero extra steps.
+      NOTES="$(cat "${REPO_DIR}/.release-notes-${VERSION}.md")"
+      echo "Using authored notes from .release-notes-${VERSION}.md"
+    else
+      NOTES=$(gh release view "v${VERSION}" --repo "$GH_REPO" --json body -q .body 2>/dev/null || true)
+    fi
+
+    # Hard stop: never let the CI operator placeholder, an empty body, or the
+    # trivial "Release vX.Y.Z" default ship to users as the release note.
+    if notes_are_placeholder "$NOTES" "$VERSION"; then
+      echo "ERROR: Refusing to publish placeholder / empty release notes into latest.json." >&2
+      echo "  Clients render 'notes' verbatim in the in-app updater dialog, so it must be a" >&2
+      echo "  real, user-facing changelog — not the CI operator placeholder, an empty body," >&2
+      echo "  or the trivial 'Release v${VERSION}' default." >&2
+      echo "" >&2
+      echo "  Fix it either way:" >&2
+      echo "    a. Edit the GitHub Release body with real notes, then re-run:" >&2
+      echo "         https://github.com/${GH_REPO}/releases/edit/v${VERSION}" >&2
+      echo "         ./publish-release.sh --publish-manifest ${VERSION}" >&2
+      echo "    b. Author the notes in a file (or inline) and pass them directly:" >&2
+      echo "         ./publish-release.sh --publish-manifest ${VERSION} --notes-file <path>" >&2
+      echo "         ./publish-release.sh --publish-manifest ${VERSION} --notes \"<string>\"" >&2
+      exit 1
     fi
 
     PUB_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z")
@@ -217,6 +303,7 @@ case "$1" in
     echo "=== Manifest published ==="
     echo "  Manifest: https://raw.githubusercontent.com/${GH_REPO}/main/latest.json"
     echo "  Clients will now see v${VERSION} as an available update."
+    print_managed_hosting_steps "${VERSION}"
     exit 0
     ;;
 
@@ -234,10 +321,21 @@ esac
 VERSION="$1"
 shift
 
-NOTES="Release v${VERSION}"
+# Notes precedence: explicit positional arg > .release-notes-<version>.md
+# (the authored-notes convention) > trivial default. The trivial default is
+# rejected downstream by --publish-manifest's placeholder guard, so a release
+# created without real notes can't silently ship a bare "Release vX.Y.Z".
+NOTES=""
 if [[ $# -gt 0 && "$1" != --* ]]; then
   NOTES="$1"
   shift
+fi
+if [[ -z "$NOTES" && -f "${REPO_DIR}/.release-notes-${VERSION}.md" ]]; then
+  NOTES="$(cat "${REPO_DIR}/.release-notes-${VERSION}.md")"
+  echo "Using authored notes from .release-notes-${VERSION}.md"
+fi
+if [[ -z "$NOTES" ]]; then
+  NOTES="Release v${VERSION}"
 fi
 
 FRONTEND_DIR="$HOME/Developer/keen/keen-frontend"

@@ -1,6 +1,6 @@
 {
   "version": "0.22.1",
-  "notes": "Draft release built by keen-frontend release workflow. Operator: review artifacts, then run Step B (`publish-release.sh --push-fly-registry 0.22.1`), promote this draft to public, then run Step C (`publish-release.sh --publish-manifest 0.22.1`).",
+  "notes": "**Fixes a stuck, confusing update for managed-server users.**\n\nIf you updated to 0.22.0 with a managed (thekeen.app) server, Keen could sit on \"Updating your server… waiting for it to come back online\" for up to three minutes and then warn that your app and server were \"out of sync\" — even when your server was healthy and fully up to date. That was a false alarm caused by a packaging mistake in the 0.22.0 desktop build, not a problem with your server or your data.\n\n0.22.1 corrects the version check so Keen recognizes an up-to-date server right away, and when there really is a version mismatch it now tells you plainly to update the app instead of spinning. Desktop-only — your server and data are untouched (aligned with keen-backend 0.22.0).\n\n## Install\n\n| Platform | Artifact |\n|---|---|\n| Apple Silicon | `Keen_0.22.1_aarch64.dmg` |\n| Intel Mac | `Keen_0.22.1_x64.dmg` |\n\nExisting installs: **Keen → Check for Updates** or Settings → Updates.",
   "pub_date": "2026-07-07T04:06:34.000Z",
   "platforms": {
     "darwin-aarch64": {

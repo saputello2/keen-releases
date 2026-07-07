@@ -3,3 +3,10 @@
 # operator-facing documentation that maps internal infrastructure must
 # live here, untracked, rather than in the public README.
 docs/
+
+# Per-release user-facing note drafts. `publish-release.sh` (Step A and
+# --publish-manifest) auto-consumes .release-notes-<version>.md into the GitHub
+# Release body and latest.json. They're local authoring scratch — the published
+# copy lives on the GitHub Release page and in latest.json, so keep them out of
+# this public repo's history.
+.release-notes-*.md
