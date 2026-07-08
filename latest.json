@@ -1,15 +1,15 @@
 {
-  "version": "0.22.2",
-  "notes": "**Smoother updates for managed-server users.**\n\nWhen you update Keen with a Keen Cloud server, the app now updates your server *before* restarting — so you boot straight into a compatible backend instead of landing on a \"Backend needs an update\" gate. Mid-update restarts no longer trigger scary \"Server image not verified\" warnings, brief connection blips are handled gracefully, and out-of-sync messaging is clearer and more honest.\n\nDesktop-only — your server and data are untouched (aligned with keen-backend 0.22.0).\n\n## Install\n\n| Platform | Artifact |\n|---|---|\n| Apple Silicon | `Keen_0.22.2_aarch64.dmg` |\n| Intel Mac | `Keen_0.22.2_x64.dmg` |\n\nExisting installs: **Keen → Check for Updates** or Settings → Updates.",
-  "pub_date": "2026-07-07T16:12:57.000Z",
+  "version": "0.23.0",
+  "notes": "**Federation Stage 2 — shared projects that stay in sync.**\n\nThis release finishes the big federation hardening push: subscribers can edit shared tasks and milestones through the Leader when connected, reconnect cleanly after outages, and get warned before claiming against an incompatible server. Collaboration settings moved to their own section; managed sign-ins survive app restarts.\n\nAlso fixes clicking a task's priority dot or a row icon on **Summary** and **Related** panels — they now focus the row instead of doing nothing (or jumping straight to the detail page).\n\nDesktop + managed server image **0.23.0**. Existing installs: **Keen → Check for Updates** or Settings → Updates. Keen Cloud users: the app can roll your server automatically when you update.\n\n## Install\n\n| Platform | Artifact |\n|---|---|\n| Apple Silicon | `Keen_0.23.0_aarch64.dmg` |\n| Intel Mac | `Keen_0.23.0_x64.dmg` |",
+  "pub_date": "2026-07-08T19:09:40.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWJDRGF5T1JHWitsM1d1b09qRjVoaWY0TkdNdEJUbjN6cXlUV01iMHlESm5OV3VMeGNlamtyTWY3M2NZQUxET2NITHp1NEdncng3ZXE1WHNuUkoyMmc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNDQwNjIyCWZpbGU6S2Vlbi5hcHAudGFyLmd6CnRvcmNIYlUxc1k1N01PeFdPRXlQVCtwOVdtd0t3c24yMURSeE5WWWE1M205dmJLdUwvNHNxY3UxeDV4NHZBcHBiRzlEWmxGVkxTVmNRVm9GclZRN0NnPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.22.2/Keen_0.22.2_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVRwWlJQaHEvQml0OWxaeE1CbG5hVXgrekk4M0hQREQ1TEFsc1hBSHN1V3NjYWxtc01VaTBUS3prVHNVOUY2ZDdlRmZkb0xTWlB2MzFsL2RLZWZUSmdBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNTM3MjE0CWZpbGU6S2Vlbi5hcHAudGFyLmd6Cm9ZekU5Zk5BS1Q4ditMTkR5UFprUENPQkkrUENUMkFhQWFOcUlTNGFuQXdjclBWOUVsZlowaC9lSDVXVUhLT3RBSFNnbDYzSm1SbVNySXFaWWNBUERnPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.23.0/Keen_0.23.0_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVhuYVJjSkJ5NVlDUWNMQlduZnpzcEh5QWNyRElxT1R6Y3lCOVJBR2c0K1FlY0xkVEFnaENLSWZoYnRWU1RIMkxlNXdlZGtBWTVXSnppR3VGS3NmdFFFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNDQwNTA3CWZpbGU6S2Vlbi5hcHAudGFyLmd6CkpWdTRsYXVOT05nMFRmK2UzZ2ZFdTBrU25IWmFiWksydFp5RGQ3ejZuWnpJTnVzY1dCMGdkMXhzc2V6K05LZWw2RklZQ1RIbElpa1JlcmpETGJmVUJBPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.22.2/Keen_0.22.2_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVJYOEtNZjJwdHdsd0JVckI1dnY3RGNuR2wwSFRrelNEdGo1QnFWazZHbmFlcHlIajdOV2pENVZ1ZUJBbHlmNFN4TzBQMW91THZ1TDZqcU1ISC9WTWdNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNTM3MTM4CWZpbGU6S2Vlbi5hcHAudGFyLmd6CnV5TktJMFBIT21lQUN2cWU1NUQyaGw2aUtaODZjMWYzL1JMVEN6NzA0S09VOE9HQjkzUFpxd1k2Y3luQU50eWU5RnVPUnp6SHhZazBWalIrY1crRER3PT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.23.0/Keen_0.23.0_x64.app.tar.gz"
     }
   }
 }
