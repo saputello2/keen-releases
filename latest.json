@@ -1,15 +1,15 @@
 {
-  "version": "0.23.0",
-  "notes": "**Federation Stage 2 — shared projects that stay in sync.**\n\nThis release finishes the big federation hardening push: subscribers can edit shared tasks and milestones through the Leader when connected, reconnect cleanly after outages, and get warned before claiming against an incompatible server. Collaboration settings moved to their own section; managed sign-ins survive app restarts.\n\nAlso fixes clicking a task's priority dot or a row icon on **Summary** and **Related** panels — they now focus the row instead of doing nothing (or jumping straight to the detail page).\n\nDesktop + managed server image **0.23.0**. Existing installs: **Keen → Check for Updates** or Settings → Updates. Keen Cloud users: the app can roll your server automatically when you update.\n\n## Install\n\n| Platform | Artifact |\n|---|---|\n| Apple Silicon | `Keen_0.23.0_aarch64.dmg` |\n| Intel Mac | `Keen_0.23.0_x64.dmg` |",
-  "pub_date": "2026-07-08T19:09:40.000Z",
+  "version": "0.24.0",
+  "notes": "**Live co-editing on shared tasks — plus markdown summary sections.**\n\nTask descriptions can now be edited together in real time when a project share grants **Live co-editing**: two cursors in one document on the owner side, and the same on federated ghost tasks for subscribers. Share mint and management pick up a co-editing toggle and badge. The Summary page gains user-authored markdown sections (with optional headers) and description subtitles on custom sections.\n\nAlso fixes writes failing with \"Load failed\" after the app has been idle, and shared-task edits no longer flash back to the old value before catching up.\n\nDesktop + managed server image **0.24.0**. Existing installs: **Keen → Check for Updates** or Settings → Updates. Keen Cloud users: the app can roll your server automatically when you update.\n\n## Install\n\n| Platform | Artifact |\n|---|---|\n| Apple Silicon | `Keen_0.24.0_aarch64.dmg` |\n| Intel Mac | `Keen_0.24.0_x64.dmg` |",
+  "pub_date": "2026-07-10T04:26:37.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVRwWlJQaHEvQml0OWxaeE1CbG5hVXgrekk4M0hQREQ1TEFsc1hBSHN1V3NjYWxtc01VaTBUS3prVHNVOUY2ZDdlRmZkb0xTWlB2MzFsL2RLZWZUSmdBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNTM3MjE0CWZpbGU6S2Vlbi5hcHAudGFyLmd6Cm9ZekU5Zk5BS1Q4ditMTkR5UFprUENPQkkrUENUMkFhQWFOcUlTNGFuQXdjclBWOUVsZlowaC9lSDVXVUhLT3RBSFNnbDYzSm1SbVNySXFaWWNBUERnPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.23.0/Keen_0.23.0_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWVxTm1QVFlRdzF0ajE5eTlNeUc4eWlFMzRRZThOWjFjZTV0T1BURnN5VHVESjIxVzRpOGJjY3NMZkFUSGVFRXBDaFNKTHlod0k0L0lDVWRrVmhDYndrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNjU3MzU5CWZpbGU6S2Vlbi5hcHAudGFyLmd6ClNZdlFHSDlpZTcxSHg5QXBSV0RSVTJOa0hYOUVvNDdYM1Q3SkVIMEFpYktuZjF2RWZaRGplMGFUUGRab0tqQjFvdjNadGFvTUZTNHZrNGVzUXp3UENBPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.24.0/Keen_0.24.0_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVJYOEtNZjJwdHdsd0JVckI1dnY3RGNuR2wwSFRrelNEdGo1QnFWazZHbmFlcHlIajdOV2pENVZ1ZUJBbHlmNFN4TzBQMW91THZ1TDZqcU1ISC9WTWdNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNTM3MTM4CWZpbGU6S2Vlbi5hcHAudGFyLmd6CnV5TktJMFBIT21lQUN2cWU1NUQyaGw2aUtaODZjMWYzL1JMVEN6NzA0S09VOE9HQjkzUFpxd1k2Y3luQU50eWU5RnVPUnp6SHhZazBWalIrY1crRER3PT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.23.0/Keen_0.23.0_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVJNUTRpbGRqZFJiMnNrTXFhMWlzU3FyK2pDVjhOUVkzMWpETi9GL3VXVVVkcVl4Wi91cXRUTVp4MGY2dGtCOStKejEyT3lnazQxWkI5cS9aZzZKUHdrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNjU3MzMxCWZpbGU6S2Vlbi5hcHAudGFyLmd6CmlmMFlZVVdzU2xmU1Fzbmw1Tk5PUEtsbENONTl3RGM3YVp3Q1RzZmh1b0FuUUVqRnpyaEVSaC9NZjJvc3l0SWRYTlJvZ2tIdFVWazdueGptTUJldEFRPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.24.0/Keen_0.24.0_x64.app.tar.gz"
     }
   }
 }
