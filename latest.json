@@ -1,15 +1,15 @@
 {
-  "version": "0.25.0",
-  "notes": "**Reliable connections after sleep and heavy use.**\n\nKeen now routes GraphQL traffic through a more resilient network path, recovers subscriptions faster when you wake your Mac, and won't show \"Backend unreachable\" when the server is simply busy. Managed servers get higher rate limits for signed-in sessions so normal navigation doesn't hit throttling.\n\nDesktop + managed server **0.25.0**. Existing installs: **Keen → Check for Updates** or Settings → Updates.\n\n## Install\n\n| Platform | Artifact |\n|---|---|\n| Apple Silicon | `Keen_0.25.0_aarch64.dmg` |\n| Intel Mac | `Keen_0.25.0_x64.dmg` |",
-  "pub_date": "2026-07-11T13:15:39.000Z",
+  "version": "0.26.0",
+  "notes": "**Joint release Desktop + Managed Server 0.26.0:** Ambient app-focus capture (opt-in), right-click menus everywhere, and quality-of-life polish.\n\n## Ambient App Focus (opt-in, off by default)\nKeen can now — only if you turn it on — notice which apps hold your attention (app identity and focus time only; never window titles or content) so your Daily Summary and insights stop going stale on days you work outside Keen. Enable it in Settings → General, and pause any time from the tray. Nothing is captured until you opt in.\n\n## Right-click menus and layout control\nContext menus arrive across the app: chat sessions, favorites, tasks, calendar events, summary sections, and progress notes. Side rails and preview panes are now resizable by dragging, and remember your widths.\n\n## Faster task workflows\nClicking a task's status circle now completes it (like Reminders); ⌥-click opens a full status menu. Task creation is first-class on the Project Dashboard, and Quick Task saves with just a title. Long titles reveal themselves on hover with new tooltip styling.\n\n## Fixes\nFirst edits in the description editor no longer vanish, editor content is saved when you press Escape or close, and overdue review-status tasks show their overdue indicator again.\n\n## Install\n\n| Platform | Artifact |\n|---|---|\n| Apple Silicon | `Keen_0.26.0_aarch64.dmg` |\n| Intel Mac | `Keen_0.26.0_x64.dmg` |\n\nExisting installs: **Keen → Check for Updates** or Settings → Updates. Managed servers update in place via Settings → \"Update your server\" if prompted.",
+  "pub_date": "2026-07-21T05:17:04.000Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVo0UUxabkZlbDVMNDlpSUhGMEoyanFZZTFSZkVsbC92a21nTVdCaFQyM3NwS1RCSDE5Vk5YV3Rac2hhR3B6MGUzMEswbEJhOGY5NDJVN0V3ci83N3dvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNzc1MzU3CWZpbGU6S2Vlbi5hcHAudGFyLmd6CmFRVldNb09KV2N0aHlzbkpoVEVJb1VFMm11QTRRVS9kZytPL3o5T1VsdjRFSk5BcmpTS2gvekllVlcvK0lkNm02azJjYXpJRE9KaERBa1V1SzhSQUJ3PT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.25.0/Keen_0.25.0_aarch64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWYxd0lPdkhkTG13SEtLU0VweXNoazREWEFBK1Q0eUF1YTFGRjZ6MnhMcW5BQ2xGOEFNVjYyVTRKLzNQcXdGSmNEUmxaNGorS2lRbHVINkZOMTFwWHc0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0NjA4MzEzCWZpbGU6S2Vlbi5hcHAudGFyLmd6CjZOS3RVdHB6Y0V5b2FSdS90K2NTWDVpMzlxZG5JRFIrUEJtRGYzRFcwL3hpQnJ1cVVKUjMrR1g1V3hLb1pBRldaTzlBeTdxR0JhYUhwV1loZTJDWkJ3PT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.26.0/Keen_0.26.0_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bVJONXhaL2k2bThJeGZjbmVHK1lCVHpSWThOTVNWdUx4TWJQNmV0cEFNKzRWSTU5bzgrL1N3MXpPR1p6OHQrSjFmUFFVTDlGRTMxUkJQMXhHdHh4NWdFPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNzc1MzgyCWZpbGU6S2Vlbi5hcHAudGFyLmd6CjExWTZyNjQxbEJCUWw4aGFmZTU3cFowWmhnSjYyQnlibkgxNlExZGpvMFhsRVk5cEtBclNSNlVtSXVkeXRRTFE4eWQ0aDNrSFdyaVJ4QlZLenROOERnPT0K",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.25.0/Keen_0.25.0_x64.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTSjRnK0o0amU4bWVyMXF6bjBJNE5tUE9xS3poc3JkK0JIcDgxTHBabmg0VjFXQ3NJby9GVGxlVWoxNWdlU09xWE1HaFRMRElNU0Y2ZWdkN2s1dHZkVGlUTzBOODluZHdjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0NjA4Mzk4CWZpbGU6S2Vlbi5hcHAudGFyLmd6CmpUK0wzelZhL3R5YUJ2NjhENG9HUjZaWk55Ym1ybDY2NXRwcXR5RXFnWUZUVVEvdGgyb1pyN2F1NmFZcjBndXl6OFpoWVVHdkVJbmFDRGhPclkrMUFBPT0K",
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.26.0/Keen_0.26.0_x64.app.tar.gz"
     }
   }
 }
