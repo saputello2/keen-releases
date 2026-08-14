@@ -1,0 +1,61 @@
+# Bug-report issue form for the Keen desktop app.
+#
+# The field `id`s below are a CONTRACT with keen-frontend's Help dialog
+# ("Report a problem"), which deep-links here with these ids as URL query
+# parameters. GitHub pre-fills text fields only, so `version` and `where`
+# arrive filled; `mode` is also sent but GitHub ignores query params for
+# dropdowns (community discussion #5288) — the user selects it, and the
+# param is kept in the URL in case support ever lands. Renaming an id
+# silently breaks the prefill — change both ends together.
+name: Bug report
+description: Something in the Keen desktop app isn't working right.
+title: "[bug] "
+labels: ["bug", "user-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. If you opened this from Keen's **Help → Report a problem**, the App version and Where fields are pre-filled — please leave them as they are, and select your backend mode below.
+  - type: input
+    id: version
+    attributes:
+      label: App version
+      description: Pre-filled by the app, or shown in the account menu / "What's New".
+      placeholder: "0.29.0"
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where in the app
+      description: The page or surface where it happened (pre-filled with the current page when reported from the app).
+      placeholder: /tasks
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Backend mode
+      description: Local runs everything on your Mac; Managed connects to a keen server.
+      options:
+        - Local (on this Mac)
+        - Managed (keen server)
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, and what went wrong? Please describe private task or note content rather than pasting it.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. …
+        2. …
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
