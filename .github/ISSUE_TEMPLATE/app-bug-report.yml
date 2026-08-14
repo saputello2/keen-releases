@@ -2,8 +2,11 @@
 #
 # The field `id`s below are a CONTRACT with keen-frontend's Help dialog
 # ("Report a problem"), which deep-links here with these ids as URL query
-# parameters to pre-fill the environment fields (version, where, mode).
-# Renaming an id silently breaks the prefill — change both ends together.
+# parameters. GitHub pre-fills text fields only, so `version` and `where`
+# arrive filled; `mode` is also sent but GitHub ignores query params for
+# dropdowns (community discussion #5288) — the user selects it, and the
+# param is kept in the URL in case support ever lands. Renaming an id
+# silently breaks the prefill — change both ends together.
 name: Bug report
 description: Something in the Keen desktop app isn't working right.
 title: "[bug] "
@@ -12,7 +15,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for the report. If you opened this from Keen's **Help → Report a problem**, the environment fields below are pre-filled — please leave them as they are.
+        Thanks for the report. If you opened this from Keen's **Help → Report a problem**, the App version and Where fields are pre-filled — please leave them as they are, and select your backend mode below.
   - type: input
     id: version
     attributes:
