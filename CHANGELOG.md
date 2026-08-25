@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.30.0] - 2026-08-24
+
+**Joint release with keen-frontend / keen-backend 0.30.0.** Pipeline changes this cycle close the release-notes leak class end to end: the `.release-notes-<version>.md` convention is now auto-consumed by both publish steps, a placeholder guard refuses to ship operator text to end users, the legacy `--push-fly-registry` path is retired, and the new `app-bug-report.yml` issue form becomes the destination for the desktop app's Report-a-problem flow.
+
 ### Added
 
 - **`app-bug-report.yml` issue form — the destination for the Keen app's "Report a problem" flow** (`.github/ISSUE_TEMPLATE/`, replacing the stock browser/smartphone `bug_report.md` boilerplate). This repo is the workspace's one public repo, so it is where users can actually file issues. The form's field `id`s (`version`, `where`, `mode`, plus free-text `what-happened` / `steps` / `expected`) are a contract with keen-frontend's Help dialog, which deep-links here with those ids as URL query parameters — renaming an id silently breaks the prefill, so change both ends together (the header comment in the form says the same). GitHub pre-fills **text fields only**, so `version` and `where` arrive filled while the `mode` dropdown is user-selected (its `required` validation guarantees an answer); the app still sends the `mode` param, harmlessly ignored today, in case GitHub ever adds dropdown prefill (community discussion #5288 — agent-review finding, confirmed independently by two reviewers). Labels applied: `bug` + the new `user-report` (created on the repo), so app-filed reports are triageable as a class. The free-text prompt explicitly asks users to *describe* private task/note content rather than paste it.
