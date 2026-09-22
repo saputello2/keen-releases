@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Copilot code review now loads a repo-wide instructions file** (`.github/copilot-instructions.md`, generated from `.cursor/rules/package-overview.mdc` by the workspace sync script). The previous `.github/instructions/copilot-instructions.md` was never read — GitHub only loads `*.instructions.md` there, and its `applyTo: 'keen-releases/**'` was workspace-relative — so it is deleted. Because this repo is public, the source rule was scrubbed before projecting: the operator's signing-key file location is no longer named (only the `TAURI_SIGNING_PRIVATE_KEY` env var), two pointers into private sibling repos are now name-only skill references, `pnpm` is corrected to `npm run … -- <ver>` in `keen-provisioning`, and the `latest.json` example uses `<X.Y.Z>` placeholders instead of a stale real version.
+
 ## [0.30.0] - 2026-08-24
 
 **Joint release with keen-frontend / keen-backend 0.30.0.** Pipeline changes this cycle close the release-notes leak class end to end: the `.release-notes-<version>.md` convention is now auto-consumed by both publish steps, a placeholder guard refuses to ship operator text to end users, the legacy `--push-fly-registry` path is retired, and the new `app-bug-report.yml` issue form becomes the destination for the desktop app's Report-a-problem flow.

@@ -31,17 +31,17 @@ The Tauri updater checks this file to determine if an update is available. The u
 
 ```json
 {
-  "version": "0.11.0",
+  "version": "<X.Y.Z>",
   "notes": "Release notes (shown in update dialog)",
-  "pub_date": "2026-04-27T12:49:22.000Z",
+  "pub_date": "<ISO 8601 UTC timestamp>",
   "platforms": {
     "darwin-aarch64": {
       "signature": "<base64 Ed25519 .sig contents>",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.11.0/Keen_0.11.0_aarch64.app.tar.gz"
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v<X.Y.Z>/Keen_<X.Y.Z>_aarch64.app.tar.gz"
     },
     "darwin-x86_64": {
       "signature": "<base64 Ed25519 .sig contents>",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v0.11.0/Keen_0.11.0_x64.app.tar.gz"
+      "url": "https://github.com/saputello2/keen-releases/releases/download/v<X.Y.Z>/Keen_<X.Y.Z>_x64.app.tar.gz"
     }
   }
 }
@@ -59,8 +59,8 @@ Three modes, run in sequence for a full release:
 | **B** | `publish-release.sh --publish-manifest <version>` | Downloads `.sig` files from GH Release, builds `latest.json` via `jq`, commits and pushes to `main` |
 | **(legacy)** | `publish-release.sh --push-fly-registry <version>` | **Retired** — errors unless `KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH=1`. Legacy docker mirror to `registry.fly.io`; not used by managed hosting. |
 
-**Managed hosting (Fly Machines)** — separate pipeline; see `keen/.cursor/skills/managed-backend-release/SKILL.md`:
-GHCR image (CI on `keen-backend` tag) → `pnpm sign-and-publish-manifest <ver> --bump-and-deploy` (or `bump-provisioning-tag` after sign) → optional `flyctl machine update`.
+**Managed hosting (Fly Machines)** — separate pipeline; see the `managed-backend-release` skill:
+GHCR image (CI on `keen-backend` tag) → in `keen-provisioning`, `npm run sign-and-publish-manifest -- <ver> --bump-and-deploy` (or `bump-provisioning-tag` after sign) → optional `flyctl machine update`.
 
 **Artifact naming convention** (from `keen-frontend` Tauri build output):
 - `Keen_<VERSION>_aarch64.app.tar.gz` + `.sig` (updater payload + signature)
@@ -86,7 +86,7 @@ Runs on push to `main` and PRs when `latest.json` changes. Five checks:
 
 ## Security
 
-- **Ed25519 signing** via Tauri/minisign — private key at `~/.tauri/keen-updater.key`, set via `TAURI_SIGNING_PRIVATE_KEY` env var during builds
+- **Ed25519 signing** via Tauri/minisign — private key is supplied to the build via the `TAURI_SIGNING_PRIVATE_KEY` env var and never committed
 - **Apple Developer ID** notarization for `.dmg` and `.app` bundles
 - **Public key** (for manual verification with `minisign -V`):
   ```
@@ -96,7 +96,7 @@ Runs on push to `main` and PRs when `latest.json` changes. Five checks:
 ## Rollback Procedures
 
 - **Client rollback**: `git revert HEAD` on `latest.json`, push to `main`
-- **Managed-hosting image rollback**: `flyctl machine update <id> --image ghcr.io/saputello2/keen-backend:<prev-version> -a keen-<subdomain>` per affected machine (see `keen-frontend/docs/runbooks/managed-hosting-infrastructure-setup.md` → "Rolling out a backend-only patch")
+- **Managed-hosting image rollback**: `flyctl machine update <id> --image ghcr.io/saputello2/keen-backend:<prev-version> -a keen-<subdomain>` per affected machine (procedure: `managed-backend-release` skill, "backend-only patch")
 - **Database restore**: `pg_restore` from a backup on the per-user Fly volume
 
 ## Conventions
