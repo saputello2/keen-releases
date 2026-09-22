@@ -63,7 +63,7 @@ Three modes, run in sequence for a full release:
 | **(legacy)** | `publish-release.sh --push-fly-registry <version>` | **Retired** — errors unless `KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH=1`. Legacy docker mirror to `registry.fly.io`; not used by managed hosting. |
 
 **Managed hosting (Fly Machines)** — separate pipeline; see the `managed-backend-release` skill:
-GHCR image (CI on `keen-backend` tag) → in `keen-provisioning`, `npm run sign-and-publish-manifest -- <ver> --bump-and-deploy` (or `bump-provisioning-tag` after sign) → optional `flyctl machine update`.
+GHCR image (CI on `keen-backend` tag) → in `keen-provisioning`, `npm run sign-and-publish-manifest -- <ver> --bump-and-deploy` (or sign alone, then `npm run bump-provisioning-tag -- <ver>`) → optional `flyctl machine update`.
 
 **Artifact naming convention** (from `keen-frontend` Tauri build output):
 - `Keen_<VERSION>_aarch64.app.tar.gz` + `.sig` (updater payload + signature)
