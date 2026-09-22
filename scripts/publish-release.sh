@@ -53,8 +53,8 @@ manifests. Signing the allow-list alone does NOT advance client-triggered rolls.
 
   1. keen-backend tag v${version} → wait for "Publish Docker Images" CI (GHCR)
   2. cd ~/Developer/keen/keen-provisioning
-       pnpm sign-and-publish-manifest ${version} --bump-and-deploy
-     (or sign alone, then: pnpm bump-provisioning-tag ${version})
+       npm run sign-and-publish-manifest -- ${version} --bump-and-deploy
+     (or sign alone, then: npm run bump-provisioning-tag -- ${version})
   3. Add keen-provisioning CHANGELOG [Unreleased] entry for the KEEN_IMAGE_TAG bump
   4. Optional: flyctl machine update <id> --image ghcr.io/saputello2/keen-backend:${version} -a <app> --yes
 
