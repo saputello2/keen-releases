@@ -23,6 +23,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### CI
+
+- **Superseded pull-request runs of the manifest validation are cancelled**
+  (`.github/workflows/validate-manifest.yml`). `pull_request` events share a
+  per-ref `concurrency` group with `cancel-in-progress`; every other event
+  gets a unique group (`run_id`), matching the workspace-wide CI hygiene
+  change, so pushes to `main` are never deduplicated while pending nor
+  cancelled while running.
+
 ### Changed
 
 - **Copilot code review now loads a repo-wide instructions file** (`.github/copilot-instructions.md`, generated from `.cursor/rules/package-overview.mdc` by the workspace sync script). The previous `.github/instructions/copilot-instructions.md` was never read — GitHub only loads `*.instructions.md` there, and its `applyTo: 'keen-releases/**'` was workspace-relative — so it is deleted. Because this repo is public, the source rule was scrubbed before projecting: the operator's signing-key file location is no longer named (only the `TAURI_SIGNING_PRIVATE_KEY` env var), two pointers into private sibling repos are now name-only skill references, `pnpm` is corrected to `npm run … -- <ver>` in `keen-provisioning` (in the rule and in the Step A next-steps text that `scripts/publish-release.sh` prints — keen-provisioning CI runs `npm ci` against its tracked `package-lock.json`; note its operator scripts still call `pnpm` internally, so pnpm must be installed either way), the sign-alone fallback is spelled out as `npm run bump-provisioning-tag -- <ver>`, and the `latest.json` example uses `<X.Y.Z>` placeholders instead of a stale real version.

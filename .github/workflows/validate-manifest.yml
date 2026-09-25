@@ -7,6 +7,13 @@ on:
   pull_request:
     paths: [latest.json]
 
+# Superseded pull-request runs cancel (they share a per-ref group); every
+# other event gets a unique group (run_id), so main pushes are never
+# deduplicated while pending nor cancelled while running.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   validate:
     runs-on: ubuntu-latest
