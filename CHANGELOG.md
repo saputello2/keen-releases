@@ -26,10 +26,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### CI
 
 - **Superseded pull-request runs of the manifest validation are cancelled**
-  (`.github/workflows/validate-manifest.yml`). A `concurrency` group keyed on
-  workflow + ref with `cancel-in-progress` only for `pull_request` events,
-  matching the workspace-wide CI hygiene change; pushes to `main` always run
-  to completion.
+  (`.github/workflows/validate-manifest.yml`). `pull_request` events share a
+  per-ref `concurrency` group with `cancel-in-progress`; every other event
+  gets a unique group (`run_id`), matching the workspace-wide CI hygiene
+  change, so pushes to `main` are never deduplicated while pending nor
+  cancelled while running.
 
 ### Changed
 
