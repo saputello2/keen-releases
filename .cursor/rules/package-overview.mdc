@@ -21,7 +21,7 @@ Two live steps, run in order. keen-frontend's `release.yml` can also create a dr
 
 | Step | Command | What it does |
 |---|---|---|
-| **A** | `publish-release.sh <version> [notes]` | Creates GitHub Release with 6 artifacts (2 `.tar.gz`, 2 `.sig`, 2 `.dmg`); bundle dirs are auto-detected, `--arm64-bundle` / `--x64-bundle` override. Notes: positional arg, else `.release-notes-<version>.md`, else the bare `Release v<version>`; Step A does not refuse placeholders, only Step B does. |
+| **A** | `publish-release.sh <version> [notes]` | Creates GitHub Release with 6 artifacts (2 `.tar.gz`, 2 `.sig`, 2 `.dmg`); the arm64 bundle dir is auto-detected (default `target/release/bundle` or the `aarch64-apple-darwin` target path, whichever holds the versioned tarball) while x64 is fixed to the `x86_64-apple-darwin` target path; `--arm64-bundle` / `--x64-bundle` override. Notes: positional arg, else `.release-notes-<version>.md`, else the bare `Release v<version>`; Step A does not refuse placeholders, only Step B does. |
 | **B** | `publish-release.sh --publish-manifest <version> [--notes-file <path> \| --notes <string>]` | Downloads `.sig` files from GH Release, builds `latest.json` via `jq`, commits on the current branch and runs `git push origin main` (so run it from `main`; the script's own banner calls this "Step C"). Notes precedence: `--notes` > `--notes-file` > `.release-notes-<version>.md` > GitHub Release body; placeholder notes are refused (they render verbatim in every client's update dialog). |
 | **(legacy)** | `publish-release.sh --push-fly-registry <version>` | **Retired** — errors unless `KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH=1`. Legacy docker mirror to `registry.fly.io`; not used by managed hosting. |
 
