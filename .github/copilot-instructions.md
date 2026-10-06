@@ -14,43 +14,9 @@ Release manifest and artifact host for the Keen desktop app's **Tauri auto-updat
 
 ## Repository Layout
 
-```
-keen-releases/
-├── latest.json                          # Tauri updater manifest (the core artifact)
-├── scripts/
-│   ├── publish-release.sh               # Multi-step release pipeline orchestrator
-│   └── push-fly-registry.sh             # Re-tag GHCR → Fly private registry (legacy)
-├── .github/workflows/
-│   └── validate-manifest.yml            # CI gate — validates latest.json on PR/push
-├── docs/                                # Git-ignored — internal runbook (not public)
-└── README.md                            # Public docs: update flow, verification, security
-```
+No `package.json`, build tools, or test framework — a pure manifest + scripts repo. `docs/` (operator runbook) and per-release note drafts `.release-notes-<version>.md` are gitignored; `publish-release.sh` picks a draft up automatically (Step A and Step B).
 
-No `package.json`, build tools, or test framework — this is a pure manifest + scripts repo.
-
-## `latest.json` Schema
-
-The Tauri updater checks this file to determine if an update is available. The updater selects the platform key matching the client architecture.
-
-```json
-{
-  "version": "<X.Y.Z>",
-  "notes": "Release notes (shown in update dialog)",
-  "pub_date": "<ISO 8601 UTC timestamp>",
-  "platforms": {
-    "darwin-aarch64": {
-      "signature": "<base64 Ed25519 .sig contents>",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v<X.Y.Z>/Keen_<X.Y.Z>_aarch64.app.tar.gz"
-    },
-    "darwin-x86_64": {
-      "signature": "<base64 Ed25519 .sig contents>",
-      "url": "https://github.com/saputello2/keen-releases/releases/download/v<X.Y.Z>/Keen_<X.Y.Z>_x64.app.tar.gz"
-    }
-  }
-}
-```
-
-Only macOS is supported currently (darwin-aarch64, darwin-x86_64).
+Only macOS is supported currently (`darwin-aarch64`, `darwin-x86_64` in `latest.json`).
 
 ## Release Pipeline (`scripts/publish-release.sh`)
 
@@ -58,8 +24,8 @@ Three modes, run in sequence for a full release:
 
 | Step | Command | What it does |
 |---|---|---|
-| **A** | `publish-release.sh <version> [notes]` | Creates GitHub Release with 6 artifacts (2 `.tar.gz`, 2 `.sig`, 2 `.dmg`). Auto-detects arm64 bundle path. |
-| **B** | `publish-release.sh --publish-manifest <version>` | Downloads `.sig` files from GH Release, builds `latest.json` via `jq`, commits and pushes to `main` |
+| **A** | `publish-release.sh <version> [notes]` | Creates GitHub Release with 6 artifacts (2 `.tar.gz`, 2 `.sig`, 2 `.dmg`). Notes: positional arg, else `.release-notes-<version>.md`. |
+| **B** | `publish-release.sh --publish-manifest <version> [--notes-file <path> \| --notes <string>]` | Downloads `.sig` files from GH Release, builds `latest.json` via `jq`, commits and pushes to `main`. Notes precedence: `--notes` > `--notes-file` > `.release-notes-<version>.md` > GitHub Release body; placeholder notes are refused (they render verbatim in every client's update dialog). |
 | **(legacy)** | `publish-release.sh --push-fly-registry <version>` | **Retired** — errors unless `KEEN_ALLOW_LEGACY_FLY_REGISTRY_PUSH=1`. Legacy docker mirror to `registry.fly.io`; not used by managed hosting. |
 
 **Managed hosting (Fly Machines)** — separate pipeline; see the `managed-backend-release` skill:
@@ -70,36 +36,20 @@ GHCR image (CI on `keen-backend` tag) → in `keen-provisioning`, `npm run sign-
 - `Keen_<VERSION>_x64.app.tar.gz` + `.sig`
 - `Keen_<VERSION>_aarch64.dmg` + `Keen_<VERSION>_x64.dmg` (manual download)
 
-## Version Bumping (Step 0)
+## Version Bumping and CI
 
-Before building, update 3 files in `keen-frontend/` in lockstep:
-- `src-tauri/tauri.conf.json` → `"version"`
-- `src-tauri/Cargo.toml` → `[package].version`
-- `package.json` → `"version"`
-
-## CI Validation (`validate-manifest.yml`)
-
-Runs on push to `main` and PRs when `latest.json` changes. Five checks:
-
-1. Required JSON fields (`version`, `notes`, `pub_date`, `platforms`)
-2. Semver format (`^[0-9]+\.[0-9]+\.[0-9]+$`)
-3. ISO 8601 date validation
-4. Non-empty signatures per platform
-5. Reachable artifact URLs (HEAD request)
+Version bumps (keen-frontend lockstep files) follow the `tauri-release` skill. CI (`validate-manifest.yml`) validates `latest.json` on PRs and pushes that change it.
 
 ## Security
 
 - **Ed25519 signing** via Tauri/minisign — private key is supplied to the build via the `TAURI_SIGNING_PRIVATE_KEY` env var and never committed
 - **Apple Developer ID** notarization for `.dmg` and `.app` bundles
-- **Public key** (for manual verification with `minisign -V`):
-  ```
-  RWSJ4g+J4je8mdZOVjwK/6WQqZ3fIQB4JTBzTiZCPOq5kFOWliG2o2cH
-  ```
+- The public key for manual `minisign -V` verification is in `README.md`
 
 ## Rollback Procedures
 
 - **Client rollback**: `git revert HEAD` on `latest.json`, push to `main`
-- **Managed-hosting image rollback**: `flyctl machine update <id> --image ghcr.io/saputello2/keen-backend:<prev-version> -a keen-<subdomain>` per affected machine (procedure: `managed-backend-release` skill, "backend-only patch")
+- **Managed-hosting image rollback**: see the `managed-backend-release` skill ("backend-only patch")
 - **Database restore**: `pg_restore` from a backup on the per-user Fly volume
 
 ## Conventions

@@ -10,3 +10,6 @@ docs/
 # copy lives on the GitHub Release page and in latest.json, so keep them out of
 # this public repo's history.
 .release-notes-*.md
+
+.claude/
+CLAUDE.md
